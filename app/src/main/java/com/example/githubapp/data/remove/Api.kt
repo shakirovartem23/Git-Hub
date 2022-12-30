@@ -5,8 +5,8 @@ import com.example.githubapp.data.remove.request_second.RetrofitClientInt1
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private const val BASE_URL = "https://api.github.com"
-private val retrofit = Retrofit.Builder()
+const val BASE_URL = "https://api.github.com"
+val retrofit = Retrofit.Builder()
     .addConverterFactory(GsonConverterFactory.create())
     .baseUrl(com.example.githubapp.data.remove.BASE_URL)
     .build()
