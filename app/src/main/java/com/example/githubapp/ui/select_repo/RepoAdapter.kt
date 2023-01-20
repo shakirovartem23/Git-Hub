@@ -8,14 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.githubapp.R
 import com.google.android.material.button.MaterialButton
 
-class RepoAdapter(private val names: List<String>, val callBack: CallBack) :
+class RepoAdapter(private val names: List<String>, private val callBack: CallBack) :
     RecyclerView.Adapter<RepoAdapter.MyViewHolder>() {
 
     fun interface CallBack{
         fun onClick(str: String)
     }
 
-    class MyViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val largeTextView: MaterialButton = itemView.findViewById(R.id.button)
         val smallTextView: TextView = itemView.findViewById(R.id.textViewSmall)
     }

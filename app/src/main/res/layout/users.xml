@@ -4,33 +4,35 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="25dp"
     android:background="#FFFFF0"
+    android:padding="25dp"
     tools:context=".ui.users.UsersActivity">
 
-    <TextView
-        android:id="@+id/idTVHead"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/head1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:gravity="center"
-        android:padding="4dp"
-        android:text="Hints"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:background="#0000"
+        app:navigationIcon="?attr/actionModeCloseDrawable"
+        android:clickable="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/akronim"
+            android:text="Info about your repo"
+            android:textSize="26dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+    </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView1"
         tools:listitem="@layout/recyclerview_item1"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="45dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,10 +27,9 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/bungee_shade"
-            android:text="Abracadabra"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/black"
-            android:textSize="15dp"
+            android:textSize="18dp"
             android:textStyle="bold" />
 
         <TextView

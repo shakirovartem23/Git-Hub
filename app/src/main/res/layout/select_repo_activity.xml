@@ -4,11 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingHorizontal="20dp"
-    android:paddingTop="15dp"
     android:background="#FFFFF0"
-    tools:context=".MainActivity">
+    android:padding="25dp"
+    tools:context=".ui.select_repo.SelectRepoActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#0000">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/akronim"
+            android:text="Select your profiles"
+            android:textSize="26dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+    </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -19,29 +34,15 @@
         app:helperText="Input Repo"
         app:hintTextColor="@color/black"
         app:errorEnabled="true"
+        android:layout_marginTop="75dp"
         android:layout_gravity="top">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/layoutEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="User Name" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="65dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:boxStrokeColor="@color/black"
-        app:hintTextColor="@color/black"
-        android:layout_gravity="top">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/layoutEditText1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Repo Name (необязательно)" />
+            android:hint="User Name"
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -51,12 +52,13 @@
         app:backgroundTint="@color/white"
         android:layout_marginBottom="45dp"
         app:srcCompat="@drawable/free_icon_plus_3524384"
+        android:layout_marginHorizontal="20dp"
         android:layout_gravity="center_horizontal|bottom"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         tools:listitem="@layout/recyclerview_item"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="155dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

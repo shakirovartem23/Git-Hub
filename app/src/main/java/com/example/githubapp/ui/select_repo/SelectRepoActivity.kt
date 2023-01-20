@@ -1,7 +1,10 @@
 package com.example.githubapp.ui.select_repo
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,8 +25,6 @@ open class SelectRepoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.select_repo_activity)
 
-        println("Error 2")
-
         val floatButton = findViewById<FloatingActionButton>(R.id.floatButton)
         val editText = findViewById<EditText>(R.id.layoutEditText)
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
@@ -32,7 +33,7 @@ open class SelectRepoActivity : AppCompatActivity() {
 
         floatButton.setOnClickListener {
             val text = editText.text
-            var listNameRepos = listOf<String>()
+            val listNameRepos = mutableListOf<String>()
             val listRepos: Call<List<Repo>> = retrofitService.listRepos("$text")
             listRepos.enqueue(object : Callback<List<Repo>> {
                 override fun onResponse(call: Call<List<Repo>>, response: Response<List<Repo>>) {
@@ -41,7 +42,6 @@ open class SelectRepoActivity : AppCompatActivity() {
                         for (i in body){
                             listNameRepos+=i.name
                         }
-                        intent.putExtra("user", text)
                     }
                     recyclerView.layoutManager = LinearLayoutManager(this@SelectRepoActivity)
                     recyclerView.adapter = RepoAdapter(listNameRepos) {

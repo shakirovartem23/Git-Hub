@@ -9,5 +9,5 @@ interface RetrofitClientInt {
     fun listRepos(@Path("user") user: String): Call<List<Repo>>
 }
 
-data class Repo(val id: String, val name: String, val stargazers_count: Int) {
+data class Repo(val id: String, val name: String, val stargazers_count: Int, val avatar_url: String) {
 }

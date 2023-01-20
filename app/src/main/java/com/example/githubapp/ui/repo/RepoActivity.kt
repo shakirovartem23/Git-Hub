@@ -1,55 +1,32 @@
 package com.example.githubapp.ui.repo
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.example.githubapp.R
 import com.example.githubapp.data.remove.GitApi1.retrofitService1
 import com.example.githubapp.data.remove.request_second.Repo1
+import com.example.githubapp.ui.select_repo.SelectRepoActivity
 import com.example.githubapp.ui.users.UsersActivity
 import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Double
-import java.lang.Math.ceil
 
 
 class RepoActivity : AppCompatActivity() {
 
-    private fun roundNum(num: Int): List<Int> {
-        if (num in 0..5) {
-            return listOf(1, 3, 5)
-        } else if (num % 100 == 50 || num % 100 == 0) {
-            var num = num - 25
-            val list = mutableListOf<Int>()
-            for (int in 1..3) {
-                list += num
-                num += 25
-            }
-            return list
-        } else if (num in 26..74) {
-            var num = ((num / 50) + 1) * 50 - 50
-            var list = listOf<Int>()
-            for (int in 1..3) {
-                list += num
-                num += 25
-            }
-            return list
-        } else {
-            val num = num.toDouble()
-            val list = listOf(num - ceil(num / 2.0) / 2.0, num, num + ceil(num / 2.0) / 2.0)
-            return list.map { it.toInt() }.toSet().toList()
-        }
-        return listOf(1, 2, 3)
-    }
-
     private fun selectNum(list: List<Int>): MutableList<Int> {
-        var result = mutableListOf(0, 0, 0, 0)
-        list.forEach { it ->
+        val result = mutableListOf(0, 0, 0, 0)
+        list.forEach {
             when(it){
                 in 3..5 -> result[1]+=1
                 in 6..8 -> result[2]+=1
@@ -64,60 +41,75 @@ class RepoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.repo)
 
-        println("Error 1")
-
-        val button = findViewById<Button>(R.id.button1)
+//        val button = findViewById<Button>(R.id.buttonOnChart)
+        val button1 = findViewById<Toolbar>(R.id.head)
 
         val title = intent.getStringExtra("title")!!
         val user = intent.getStringExtra("user")!!
         val barChart = findViewById<BarChart>(R.id.idBarChart)
+        val button2 = findViewById<Button>(R.id.button2)
+        val button3 = findViewById<Button>(R.id.button3)
+        val button4 = findViewById<Button>(R.id.button4)
+        val button5 = findViewById<Button>(R.id.button5)
 
         setTitle(title)
 
-        val listStar: Call<List<com.example.githubapp.data.remove.request_second.Repo1>> = retrofitService1.listRepos1(user, title)
+        button1.setOnClickListener{
+            val intent = Intent(this@RepoActivity, SelectRepoActivity::class.java)
+            startActivity(intent)
+        }
+
+        val listStar: Call<List<Repo1>> = retrofitService1.listRepos1(user, title)
         listStar.enqueue(object : Callback<List<Repo1>> {
             override fun onResponse(call: Call<List<Repo1>>, response: Response<List<Repo1>>) {
                 val body = response.body()
-                var list_for_star = listOf<Int>()
+                val map = mutableMapOf<String, String>()
+                var list_for_star = mutableListOf<Int>()
                 if (body != null) {
                     for (i in body){
                         list_for_star+=(i.starred_at.substring(5..6)).toInt()
-                        println("Error1 $body")
+                        i.
+                        map+=Double(i.starred_at, i.user.login)
                     }
                 }
-                var entries = listOf<BarEntry>()
-
+                val entries = mutableListOf<BarEntry>()
                 var count = 1f
 
                 list_for_star = selectNum(list_for_star)
 
-                println("Error: $list_for_star")
-
                 list_for_star.forEach { value ->
-                    entries+=BarEntry(count, value.toFloat(), "October")
+                    entries+=BarEntry(count, value.toFloat())
                     count+=1
                 }
 
                 val barDataSet = BarDataSet(entries, title)
+                val axisLeft = barChart.axisLeft
+                val axisRight = barChart.axisRight
+                val xAxis = barChart.xAxis
 
-                barChart.axisRight.setDrawLabels(false)
-                barChart.axisLeft.granularity = 1f
-                barChart.axisLeft.axisMinimum = 0f
-                barChart.axisLeft.axisMaximum = 5f
-                barChart.xAxis.setDrawLabels(false)
-                barChart.setTouchEnabled(false)
-                barChart.legend.isEnabled = true
+
+                barChart.axisRight.setDrawAxisLine(false)
+                axisLeft.isEnabled = false
+                axisLeft.setDrawAxisLine(false)
+                axisRight.setDrawAxisLine(false)
+                axisRight.isEnabled = false
+                xAxis.position = XAxis.XAxisPosition.BOTTOM
+                barChart.setTouchEnabled(true)
+                xAxis.isEnabled = false
+                barChart.legend.isEnabled = false
+                barChart.notifyDataSetChanged()
+                xAxis.setDrawAxisLine(false)
+                xAxis.setDrawGridLines(false)
+                barChart.description.isEnabled = false
 
                 val data = BarData(barDataSet)
                 barChart.data = data
-                barChart.invalidate()
+                barDataSet.colors = listOf(resources.getColor(R.color.teal_200), resources.getColor(R.color.purple_200), resources.getColor(R.color.redFull), resources.getColor(R.color.purple_700))
 
-                button.setOnClickListener {
-                    val intent = Intent(this@RepoActivity, UsersActivity::class.java)
-                    intent.putExtra("title", title)
-                    intent.putExtra("user", user)
-                    startActivity(intent)
-                }
+                val intent = Intent(this@RepoActivity, UsersActivity::class.java)
+                intent.putExtra("title", title)
+                intent.putExtra("user", user)
+                startActivity(intent)
 
             }
 

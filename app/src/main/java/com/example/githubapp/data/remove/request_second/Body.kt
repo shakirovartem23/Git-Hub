@@ -1,5 +1,7 @@
 package com.example.githubapp.data.remove.request_second
 
+import android.os.Parcel
+import android.os.Parcelable
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -11,5 +13,9 @@ interface RetrofitClientInt1 {
     fun listRepos1(@Path("user") user: String, @Path("repo") repo: String): Call<List<Repo1>>
 }
 
-data class Repo1(val starred_at: String){
-}
+data class Repo1(val starred_at: String,
+                 val user: NewRepo
+)
+data class NewRepo(val login: String,
+                   val avatar_url: String
+)

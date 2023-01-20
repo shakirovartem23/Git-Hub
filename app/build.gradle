@@ -42,8 +42,13 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
     implementation 'androidx.core:core-ktx:1.7.0'
+
     // Moshi
     implementation 'com.squareup.moshi:moshi-kotlin:1.9.3'
+
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.8'
+
 
     // Retrofit with Moshi Converter
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
