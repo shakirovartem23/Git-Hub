@@ -1,5 +1,7 @@
 package com.example.githubapp.ui.repo
 
+import java.util.*
+
 
 interface ForSelectTime{
     fun DurationList(map: Map<String, String>, data: String): List<String>
@@ -51,14 +53,29 @@ enum class SelectTime: ForSelectTime {
     MONTHS{
         override fun DurationList(map: Map<String, String>, data: String): List<String> {
             val list = mutableListOf<String>()
-            val season = when(data){
-                "One" ->1
-                "Two" ->2
-                "Three" ->3
-                else ->4
+            val seasons = when(data.split(" ")[0]){
+                "Jan" ->1
+                "Feb" ->2
+                "Mar" ->3
+                "Apr" ->4
+                "May" ->5
+                "Jun" ->6
+                "Jul" ->7
+                "Aug" ->8
+                "Sep" ->9
+                "Oct" ->10
+                "Nov" ->11
+                else -> 12
+            }
+            val season = when(data.split(" ")[1]){
+                "One" ->1..7
+                "Two" ->8..14
+                "Three" ->15..21
+                "For" -> 22..28
+                else -> 29..31
             }
             map.keys.forEach {
-                if(it.substring(8..9).toInt() in listOf(29, 30, 31) || it.substring(8..9).toInt() == season) list+=map[it]!!
+                if(it.substring(8..9).toInt() in season && seasons==it.substring(5..6).toInt()) list+=map[it]!!
             }
             return list
         }
@@ -67,7 +84,7 @@ enum class SelectTime: ForSelectTime {
     DAYS{
         override fun DurationList(map: Map<String, String>, data: String): List<String> {
             val list = mutableListOf<String>()
-            val list1: List<Int> = data.split(" ").filter { it=="" }.map { it.toInt() }
+            val list1: List<Int> = data.split(" ").map { it.toInt() }
             map.keys.forEach {
                 if(it.substring(8..9).toInt() in list1) {
                     list+=map[it]!!
