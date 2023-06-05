@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginStart="-20dp"
     android:orientation="vertical">
 
@@ -11,24 +11,24 @@
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginHorizontal="25dp"
+        android:background="?android:selectableItemBackground"
+        android:fontFamily="@font/knewave"
         android:gravity="start"
+        android:textColor="@color/black"
         app:icon="@android:drawable/ic_input_add"
         app:iconTint="@color/black"
-        android:textColor="@color/black"
-        android:fontFamily="@font/knewave"
-        android:background="?selectableItemBackground"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="75dp"
         android:layout_marginTop="-10dp"
         android:fontFamily="@font/aclonica"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_marginStart="75dp"/>
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 </LinearLayout>

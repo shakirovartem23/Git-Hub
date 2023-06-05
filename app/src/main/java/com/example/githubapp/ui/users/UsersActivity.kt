@@ -17,13 +17,8 @@ class UsersActivity: AppCompatActivity() {
         setContentView(R.layout.users)
         var listRepos = mutableListOf<Triple<String, String, String>>()
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView1)
+        var dataValue = intent.getStringArrayExtra("DataValue")!!.toList()
         val title = intent.getStringExtra("title")!!
-        val ses = when(intent.getIntExtra("Season", 1)){
-            2 ->3..5
-            3 ->6..8
-            4 ->9..11
-            else -> listOf(12, 1, 2)
-        }
         val listRepos1 = mutableListOf<Triple<String, String, String>>()
 
         setTitle(title)
@@ -32,7 +27,6 @@ class UsersActivity: AppCompatActivity() {
         listStar.enqueue(object : Callback<List<Repo1>> {
             override fun onResponse(call: Call<List<Repo1>>, response: Response<List<Repo1>>) {
                 val body = response.body()
-                println("Error:$body")
                 if (body != null) {
                     for (i in body){
                         listRepos+=Triple(i.user.login, i.starred_at.substring(0..9), i.starred_at.substring(11..18))
@@ -40,7 +34,7 @@ class UsersActivity: AppCompatActivity() {
                 }
 
                 listRepos.forEach {
-                    if(it.second.substring(5..6).toInt() in ses){
+                    if(it.first in dataValue){
                         listRepos1+=it
                     }
                 }

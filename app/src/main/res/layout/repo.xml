@@ -13,6 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#0000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="?attr/actionModeCloseDrawable"
         android:clickable="true"
         android:focusable="true">
@@ -37,121 +40,73 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <LinearLayout
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@id/idBarChart"
-        app:layout_constraintTop_toBottomOf="@id/idBarChart"
-        app:layout_constraintEnd_toEndOf="@id/idBarChart">
-
-        <TextView
-            android:layout_marginStart="15dp"
-            android:text="@string/winter"
-            style="@style/TextNormal"/>
-
-        <TextView
-            style="@style/TextNormal"
-            android:text="@string/spring" />
-
-        <TextView
-            style="@style/TextNormal"
-            android:text="@string/summer" />
-
-        <TextView
-            style="@style/TextNormal"
-            android:text="@string/autumn" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@id/idBarChart"
-        app:layout_constraintTop_toTopOf="@id/idBarChart"
-        app:layout_constraintEnd_toEndOf="@id/idBarChart"
-        app:layout_constraintStart_toStartOf="@id/idBarChart">
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#0000"
-            style="?android:attr/buttonBarButtonStyle" />
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#0000"
-            style="?android:attr/buttonBarButtonStyle" />
-
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#0000"
-            style="?android:attr/buttonBarButtonStyle" />
-
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#0000"
-            style="?android:attr/buttonBarButtonStyle" />
-    </LinearLayout>
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select time"
         android:fontFamily="@font/creepster"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="55dp"
         android:textColor="@color/black"
         android:textSize="26sp"
-        app:layout_constraintTop_toBottomOf="@id/list"
-        app:layout_constraintStart_toStartOf="@id/list"
-        app:layout_constraintEnd_toEndOf="@id/list"/>
+        app:layout_constraintTop_toBottomOf="@id/idBarChart"
+        app:layout_constraintStart_toStartOf="@id/idBarChart"
+        app:layout_constraintEnd_toEndOf="@id/idBarChart"/>
 
-    <RadioGroup
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text"
+        android:layout_width="150dp"
+        android:text="Дата"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_height="wrap_content"
+        app:boxStrokeColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintStart_toStartOf="@id/idBarChart">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Choose time"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/button6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/textView"
+        android:text="Далее ->"
+        android:backgroundTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/text"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="25dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text"
+        android:padding="25dp">
 
-        <RadioButton
-            android:id="@+id/switch1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Season" />
+        <TextView
+            android:text="- Year"
+            style="@style/TextNormal"/>
 
-        <RadioButton
-            android:id="@+id/switch2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Month" />
+        <TextView
+            android:text="- Season"
+            style="@style/TextNormal"/>
 
-        <RadioButton
-            android:id="@+id/switch3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="7 Days" />
+        <TextView
+            android:text="- Mont ${First/Second/Third/Forth"
+            style="@style/TextNormal"
+            />
 
-        <RadioButton
-            android:id="@+id/switch4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/black"
-            android:text="Year" />
+        <TextView
+            android:text="- Number interval"
+            style="@style/TextNormal"/>
 
-    </RadioGroup>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
