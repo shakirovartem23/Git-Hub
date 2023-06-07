@@ -1,7 +1,5 @@
 package com.example.githubapp.Save_Data
 
-package com.example.roomapp.Room
-
 import androidx.room.*
 
 @Entity
