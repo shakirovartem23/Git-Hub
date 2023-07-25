@@ -2,7 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.githubapp">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
 
     <application
         android:allowBackup="true"
@@ -14,23 +19,35 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GitHubApp"
         tools:targetApi="31">
+        <service
+            android:name=".interactionWithGitHub"
+            android:enabled="true"
+            android:exported="true"/>
+
         <activity
             android:name=".ui.repo.RepoActivity"
-            android:parentActivityName=".ui.select_repo.SelectRepoActivity"/>
+            android:parentActivityName=".ui.select_repo.SelectRepoActivity" />
         <activity
             android:name=".ui.users.UsersActivity"
-            android:parentActivityName=".ui.repo.RepoActivity"/>
+            android:parentActivityName=".ui.repo.RepoActivity" />
         <activity
             android:name=".ui.select_repo.SelectRepoActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".MyBroadcastReceiver"
+            android:directBootAware="true">
+
+        </receiver>
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
+
 </manifest>

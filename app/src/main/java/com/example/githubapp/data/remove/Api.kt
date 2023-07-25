@@ -12,6 +12,10 @@ const val BASE_URL = "https://api.github.com"
 var logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 var client: OkHttpClient = OkHttpClient.Builder()
     .addInterceptor(logging)
+    .addInterceptor {
+        val request = it.request().newBuilder().addHeader("Authorization", "Bearer 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").build()
+        it.proceed(request)
+    }
     .build()
 val retrofit: Retrofit = Retrofit.Builder()
     .addConverterFactory(GsonConverterFactory.create())

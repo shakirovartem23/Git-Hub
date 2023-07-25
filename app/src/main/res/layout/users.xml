@@ -31,6 +31,18 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/star4"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="7dp"
+        android:background="?selectableItemBackground"
+        android:foreground="@drawable/star_point_icon_icons_com_68483"
+        android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/head1"
+        app:layout_constraintEnd_toEndOf="@id/head1"
+        app:layout_constraintTop_toTopOf="@id/head1" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView1"
         tools:listitem="@layout/recyclerview_item1"

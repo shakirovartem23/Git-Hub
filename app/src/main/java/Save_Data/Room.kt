@@ -10,48 +10,47 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 
 
-@Entity
+@Entity("Star")
 data class Star(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Int,
     val date: String,
+    val favourite: Boolean,
     @Embedded("userId")
     val userId: User,
     @Embedded("repositoryId")
     val repositoryId: Repository,
 )
-
+@Entity("Repository")
 data class Repository(
     val id: Int,
     val name: String,
     @Embedded("ownerId")
     val ownerId: User,
 )
-
+@Entity("User")
 data class User(
     val id: Int,
     val name: String,
-    val avatarUrl: String
+    val avatarUrl: String,
 )
 
 
 @Dao
 interface EmployeeDao {
-    @Query("SELECT * FROM star WHERE userIdname = :userIdname")
-    suspend fun selectNameRepos(userIdname: String): List<Star>
+    @Query("SELECT * FROM Repository WHERE ownerIdname = :userIdname")
+    suspend fun selectNameRepos(userIdname: String): List<Repository>
 
-    @Query("SELECT * FROM star WHERE repositoryIdname = :repositoryIdname")
+    @Query("SELECT * FROM Star WHERE repositoryIdname = :repositoryIdname")
     suspend fun selectStarOfRepo(repositoryIdname: String): List<Star>
 
     @Insert
-    suspend fun insertOfStars(star: Star)
-
-    @Query("SELECT * FROM star")
-    suspend fun allStar(): List<Star>
-
+    suspend fun insertOfRepo(repo: Repository)
 }
 
-@Database(entities = [Star::class], version = 1)
+@Database(entities = [Star::class, Repository::class, User::class], version = 1, exportSchema = true
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun employeeDao(): EmployeeDao
 }
+

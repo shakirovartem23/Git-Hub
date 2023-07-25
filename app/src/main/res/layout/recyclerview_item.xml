@@ -3,25 +3,46 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="-20dp"
     android:orientation="vertical">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button"
-        android:layout_width="300dp"
-        android:layout_height="60dp"
-        android:layout_marginHorizontal="25dp"
-        android:background="?android:selectableItemBackground"
-        android:fontFamily="@font/knewave"
-        android:gravity="start"
-        android:textColor="@color/black"
-        app:icon="@android:drawable/ic_input_add"
-        app:iconTint="@color/black"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:background="?android:selectableItemBackground"
+            android:fontFamily="@font/knewave"
+            android:gravity="start"
+            android:textColor="@color/black"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconTint="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/star1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="9dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginStart="0dp"
+            android:background="?selectableItemBackground"
+            android:layout_marginVertical="15dp"
+            android:foreground="@drawable/star_point_icon_icons_com_68483"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textViewSmall"
@@ -31,4 +52,5 @@
         android:layout_marginTop="-10dp"
         android:fontFamily="@font/aclonica"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+
 </LinearLayout>

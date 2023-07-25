@@ -1,0 +1,88 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "5dd1d6b3aa0887c2b788748f56a15ebd",
+    "entities": [
+      {
+        "tableName": "allStar",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `userIdid` INTEGER NOT NULL, `userIdname` TEXT NOT NULL, `userIdavatarUrl` TEXT NOT NULL, `repositoryIdid` INTEGER NOT NULL, `repositoryIdname` TEXT NOT NULL, `repositoryIdownerIdid` INTEGER NOT NULL, `repositoryIdownerIdname` TEXT NOT NULL, `repositoryIdownerIdavatarUrl` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId.id",
+            "columnName": "userIdid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId.name",
+            "columnName": "userIdname",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId.avatarUrl",
+            "columnName": "userIdavatarUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repositoryId.id",
+            "columnName": "repositoryIdid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repositoryId.name",
+            "columnName": "repositoryIdname",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repositoryId.ownerId.id",
+            "columnName": "repositoryIdownerIdid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repositoryId.ownerId.name",
+            "columnName": "repositoryIdownerIdname",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repositoryId.ownerId.avatarUrl",
+            "columnName": "repositoryIdownerIdavatarUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5dd1d6b3aa0887c2b788748f56a15ebd')"
+    ]
+  }
+}
