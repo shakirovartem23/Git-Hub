@@ -53,58 +53,53 @@
         app:layout_constraintStart_toStartOf="@id/idBarChart"
         app:layout_constraintEnd_toEndOf="@id/idBarChart"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text"
-        android:layout_width="150dp"
-        android:text="Дата"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_height="wrap_content"
-        app:boxStrokeColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/textView"
-        app:layout_constraintStart_toStartOf="@id/idBarChart">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Choose time"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <Button
         android:id="@+id/button6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Далее ->"
         android:backgroundTint="@color/black"
-        app:layout_constraintBottom_toBottomOf="@id/text"
+        app:layout_constraintTop_toBottomOf="@id/textView"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text"
+        app:layout_constraintTop_toBottomOf="@id/textView"
         android:padding="25dp">
 
-        <TextView
-            android:text="- Year"
-            style="@style/TextNormal"/>
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            android:text="- Season"
-            style="@style/TextNormal"/>
+            <RadioButton
+                android:id="@+id/buttonOfYear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="- Year"
+                style="@style/TextNormal"/>
 
-        <TextView
-            android:text="- Mont ${First/Second/Third/Forth"
-            style="@style/TextNormal"
-            />
+            <RadioButton
+                android:id="@+id/buttonOfSeason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="- Season"
+                style="@style/TextNormal"/>
 
-        <TextView
-            android:text="- Number interval"
-            style="@style/TextNormal"/>
+            <RadioButton
+                android:id="@+id/buttonOfMonth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="- Mont: First/Second/Third/Forth"
+                style="@style/TextNormal"/>
+
+        </RadioGroup>
+
 
     </LinearLayout>
 

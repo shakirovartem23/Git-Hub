@@ -22,7 +22,6 @@ object GitApi {
     val retrofitService: RetrofitClientInt by lazy { com.example.githubapp.data.remove.retrofit.create(
         RetrofitClientInt::class.java) }
 }
-
 object GitApi1 {
     val retrofitService1: RetrofitClientInt1 by lazy { com.example.githubapp.data.remove.retrofit.create(
         RetrofitClientInt1::class.java) }

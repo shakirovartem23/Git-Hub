@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.githubapp.R
 import com.google.android.material.button.MaterialButton
 
-class RepoAdapter(private val names: List<String>, private val callBack: CallBack) :
-    RecyclerView.Adapter<RepoAdapter.MyViewHolder>() {
+class SelectRepoAdapter(private val names: List<String>, private val callBack: CallBack) :
+    RecyclerView.Adapter<SelectRepoAdapter.MyViewHolder>() {
 
     fun interface CallBack{
         fun onClick(str: String)

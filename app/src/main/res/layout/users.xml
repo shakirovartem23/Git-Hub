@@ -13,8 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#0000"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="?attr/actionModeCloseDrawable"
-        android:clickable="true">
+        tools:layout_editor_absoluteX="25dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -22,9 +25,9 @@
             android:layout_gravity="center"
             android:fontFamily="@font/akronim"
             android:text="Info about your repo"
+            android:textColor="@color/black"
             android:textSize="26dp"
-            android:textStyle="bold"
-            android:textColor="@color/black"/>
+            android:textStyle="bold" />
 
     </androidx.appcompat.widget.Toolbar>
 
