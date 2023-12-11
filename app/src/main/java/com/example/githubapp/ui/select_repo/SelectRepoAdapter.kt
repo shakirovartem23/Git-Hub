@@ -1,8 +1,7 @@
 package com.example.githubapp.ui.select_repo
 
-import Save_Data.EmployeeDao1
+import Save_Data.EmployeeDao
 import Save_Data.Repository
-import Save_Data.User
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.os.Build
@@ -10,20 +9,63 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubapp.R
-import com.example.githubapp.Saved.returnResult
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class SelectRepoAdapter(private val resources: Resources, private val employeeDao1: EmployeeDao1, private val callBack1: returnResult, private val names: List<String>, private val callBack: CallBack) :
+@OptIn(DelicateCoroutinesApi::class)
+fun fun1(
+    list: EmployeeDao,
+    name: String
+): Boolean{
+    val list1 = mutableListOf<String>()
+    GlobalScope.launch(Dispatchers.IO) {
+        list.allRepos().forEach {
+            list1 += it.name
+        }
+    }
+    return name in list1
+}
+@RequiresApi(Build.VERSION_CODES.M)
+fun fun2(
+    button: MaterialButton,
+    white: ColorStateList,
+    black: ColorStateList,
+    employeeDao: EmployeeDao,
+    s: String
+): Boolean{
+    val perm = fun1(employeeDao, s)
+
+    when(perm){
+        true -> button.foregroundTintList =
+            white
+        else -> button.foregroundTintList =
+            black
+    }
+
+    return perm
+}
+
+class SelectRepoAdapter(
+    private val resources: Resources,
+    private val employeeDao: EmployeeDao,
+    private val callback: callBack,
+    private val names: List<String>,
+    private val userName: String
+) :
     RecyclerView.Adapter<SelectRepoAdapter.MyViewHolder>() {
 
-    fun interface CallBack{
-        fun onClick(str: String)
+    fun interface callBack{
+        fun call(repoName: String)
     }
+
+    val black = ColorStateList.valueOf(resources.getColor(R.color.black))
+    val white = ColorStateList.valueOf(resources.getColor(R.color.white))
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val selectButton: MaterialButton = itemView.findViewById(R.id.button)
@@ -39,75 +81,29 @@ class SelectRepoAdapter(private val resources: Resources, private val employeeDa
         return MyViewHolder(itemView)
     }
 
+
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        GlobalScope.launch(Dispatchers.Main) {
-            holder.selectButton.text = names[position]
-            holder.nameRepo.text = "Name Repo"
+        val button = holder.selectButton
+
+        button.text = names[position]
+        holder.nameRepo.text = "Name Repository"
+
+        holder.starButton.setOnClickListener {
+            callback.call(names[position])
+        }
+
+        holder.starButton.setOnClickListener {
             GlobalScope.launch(Dispatchers.Main) {
-                val bool = when (employeeDao1.allLikeStar()
-                    .find { it.repositoryId1.name1 == names[position] }) {
-                    null -> false
-                    else -> true
-                }
-                if (bool) {
-                    println("Error")
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        holder.starButton.foregroundTintList =
-                            ColorStateList.valueOf(resources.getColor(R.color.white))
-                    }
-                } else {
-                    println("Error1")
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        holder.starButton.foregroundTintList =
-                            ColorStateList.valueOf(resources.getColor(R.color.black))
-                    }
-                }
-            }
-            holder.selectButton.setOnClickListener {
-                GlobalScope.launch(Dispatchers.Main) {
-                    val allStar = employeeDao.selectStarOfRepo(holder.selectButton.text.toString())
-                    if (ColorStateList.valueOf(resources.getColor(R.color.white)) == starButton.foregroundTintList
-                    ) {
-                        GlobalScope.launch(Dispatchers.Main) {
-                            allStar.forEach {
-                                val OS =
-                                    Repository(
-                                        it.repositoryId.id,
-                                        it.repositoryId.name,
-                                        User(
-                                            it.userId.id,
-                                            it.userId.name,
-                                            it.userId.avatarUrl
-                                        )
-                                    )
-                                employeeDao.insertOfRepo(OS)
-                                starButton.foregroundTintList =
-                                    ColorStateList.valueOf(resources.getColor(R.color.black))
-                            }
-                        }
-                    } else {
-                        GlobalScope.launch(Dispatchers.Main) {
-                            allStar.forEach {
-                                val OS = Repository(
-                                    it.repositoryId.id,
-                                    it.repositoryId.name,
-                                    User(
-                                        it.userId.id,
-                                        it.userId.name,
-                                        it.userId.avatarUrl
-                                    )
-                                )
-                                employeeDao.insertOfRepo(OS)
-                                starButton.foregroundTintList =
-                                    ColorStateList.valueOf(resources.getColor(R.color.white))
-                            }
-                        }
-                    }
-                }
-            }
-            holder.starButton.setOnClickListener {
-                println("Error2")
-                callBack1.onClick(holder.starButton, holder.selectButton.text.toString())
+                employeeDao.updateRepository(Repository(
+                    button.text.toString().hashCode(),
+                    button.text.toString(),
+                    userName,
+                    fun2(button, white, black, employeeDao, names[position])
+                ))
+                    button.foregroundTintList =
+                        black
             }
         }
     }

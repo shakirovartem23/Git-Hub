@@ -1,10 +1,6 @@
 package com.example.githubapp.ui.users
 
 import Save_Data.AppDatabase
-import Save_Data.AppDatabase1
-import Save_Data.Repository
-import Save_Data.Star
-import Save_Data.User
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Build
@@ -17,15 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.example.githubapp.R
 import com.example.githubapp.Saved.loadUsersOfStarring
-import com.example.githubapp.Saved.returnResult
 import com.example.githubapp.ui.repo.RepoActivity
-import com.example.githubapp.ui.select_repo.toStar1
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-
+@RequiresApi(Build.VERSION_CODES.M)
 class UsersActivity: AppCompatActivity() {
+
+    val white = ColorStateList.valueOf(resources.getColor(R.color.white))
+    val black = ColorStateList.valueOf(resources.getColor(R.color.black))
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,133 +46,23 @@ class UsersActivity: AppCompatActivity() {
             AppDatabase::class.java, "allStar"
         ).build().employeeDao()
 
-        val employeeDao1 = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase1::class.java, "favouriteStar"
-        ).build().employeeDao1()
-
-        val star3 = findViewById<MaterialButton>(R.id.star4)
+        val starButton = findViewById<MaterialButton>(R.id.star4)
         GlobalScope.launch(Dispatchers.Main) {
-            val bool = when (employeeDao1.allLikeStar()
-                .find { it.repositoryId1.name1 == repoName }) {
-                null -> false
-                else -> true
-            }
-            if (bool) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    star3.foregroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.white))
-                }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    star3.foregroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.black))
-                }
-            }
-        }
-
-        star3.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                val foregroundTint = star3.foregroundTintList
-                val allStar = employeeDao.selectStarOfRepo(repoName)
-                var listOfStar1 = mutableListOf<Star>()
-                if (ColorStateList.valueOf(resources.getColor(R.color.white)) == foregroundTint
-                ) {
-                    allStar.forEach {
-                        val OS0 = Star(
-                            0,
-                            it.date,
-                            User(
-                                it.userId.id,
-                                it.userId.name,
-                                it.userId.avatarUrl
-                            ),
-                            Repository(
-                                it.repositoryId.id,
-                                it.repositoryId.name,
-                                User(
-                                    it.userId.id,
-                                    it.userId.name,
-                                    it.userId.avatarUrl
-                                )
-                            )
-                        )
-                        listOfStar1 += OS0
-                    }
-                    GlobalScope.launch(Dispatchers.Main) {
-                        star3.foregroundTintList =
-                            ColorStateList.valueOf(resources.getColor(R.color.black))
-                        employeeDao1.allLikeStar()
-                            .filter { it.repositoryId1.name1 == repoName }
-                            .forEach {
-                                employeeDao1.deleteOfStar(it)
-                            }
-                    }
-                } else {
-                    allStar.forEach {
-                        val OS0 = Star(
-                            0,
-                            it.date,
-                            User(
-                                it.userId.id,
-                                it.userId.name,
-                                it.userId.avatarUrl
-                            ),
-                            Repository(
-                                it.repositoryId.id,
-                                it.repositoryId.name,
-                                User(
-                                    it.userId.id,
-                                    it.userId.name,
-                                    it.userId.avatarUrl
-                                )
-                            )
-                        )
-                        listOfStar1 += OS0
-                    }
-                    GlobalScope.launch(Dispatchers.Main) {
-                        val list = listOfStar1.map { it.toStar1(it) }
-                        star3.foregroundTintList =
-                            ColorStateList.valueOf(resources.getColor(R.color.white))
-                        if (employeeDao1.allLikeStar()
-                                .filter { it.repositoryId1.name1 == repoName }.isNotEmpty()
-                        ) else {
-                            list.forEach{
-                                employeeDao1.insertOfStar(it)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        val callback = object: returnResult {
-            override fun returnNameRepos(resultNameRepos: List<String>) {
-
-            }
-
-            override fun returnTimeStarring(resultTimeStarring: MutableMap<String, String>) {
-
-            }
-
-            override fun returnUsersOfStarring(resultUsersOfStarring: MutableList<Triple<String, String, String>>) {
-                recyclerView.layoutManager = LinearLayoutManager(this@UsersActivity)
-                recyclerView.adapter = UsersAdapter(resultUsersOfStarring)
-            }
-
-            override fun onClick(starButton: MaterialButton,
-                                 repoName: String
-            ) {
-                TODO("Not yet implemented")
+            when(employeeDao.selectRepo(repoName).first().favourite){
+                true -> starButton.foregroundTintList = white
+                else -> starButton.foregroundTintList = black
             }
         }
 
         title = repoName
         GlobalScope.launch(Dispatchers.Main) {
-            val employees = employeeDao.selectStarOfRepo(repoName)
+            val employees = employeeDao.selectStarWO(repoName)
 
             GlobalScope.launch(Dispatchers.Main) {
-                loadUsersOfStarring(userName, repoName, dataValue, employees, callback)
+                recyclerView.layoutManager = LinearLayoutManager(this@UsersActivity)
+                recyclerView.adapter = UsersAdapter(
+                    loadUsersOfStarring(userName, repoName, dataValue, employees)
+                )
             }
         }
 

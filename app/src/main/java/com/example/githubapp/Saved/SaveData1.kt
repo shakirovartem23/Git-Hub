@@ -6,6 +6,7 @@ import com.example.githubapp.data.remove.request_first.Repo
 import com.example.githubapp.data.remove.request_second.Repo1
 
 
+@Suppress("UNREACHABLE_CODE")
 class SaveDataForSelect {
 
     suspend fun loadUsersOfStarring(userName: String, repoName: String): List<Repo1>{

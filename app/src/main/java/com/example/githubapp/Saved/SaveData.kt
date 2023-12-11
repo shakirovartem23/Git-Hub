@@ -1,35 +1,25 @@
 package com.example.githubapp.Saved
 
+import Save_Data.Repository
 import Save_Data.Star
 import com.example.githubapp.data.remove.GitApi
 import com.example.githubapp.data.remove.GitApi1
 import com.example.githubapp.data.remove.request_first.Repo
 import com.example.githubapp.data.remove.request_second.Repo1
-import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.DelicateCoroutinesApi
-
-interface returnResult{
-    fun returnNameRepos(resultNameRepos: List<String>)
-    fun returnTimeStarring(resultTimeStarring: MutableMap<String, String>)
-    fun returnUsersOfStarring(resultUsersOfStarring: MutableList<Triple<String, String, String>>)
-    fun onClick(starButton: MaterialButton,
-                repoName: String
-    )
-}
 
 suspend fun loadUsersOfStarring(
     userName: String,
     repoName: String,
     dataValue: List<String>,
-    employees: List<Star>,
-    callback: returnResult
-) {
+    employees: List<Star>
+): MutableList<Triple<String, String, String>> {
     val listRepos = mutableListOf<Triple<String, String, String>>()
     val resultUsersOfStarring = mutableListOf<Triple<String, String, String>>()
 
     employees.forEach {
         resultUsersOfStarring += Triple(
-            it.userId.name,
+            it.userName,
             it.date.substring(0..9),
             it.date.substring(11..18)
         )
@@ -42,7 +32,7 @@ suspend fun loadUsersOfStarring(
                 list+=it
             }
         }
-        callback.returnUsersOfStarring(list)
+        return listRepos
     } else {
         val listStar: List<Repo1> = try {
             GitApi1.retrofitService1.listRepos1(userName, repoName)
@@ -61,18 +51,18 @@ suspend fun loadUsersOfStarring(
                 resultUsersOfStarring += it
             }
         }
-        callback.returnUsersOfStarring(listRepos)
     }
+    return listRepos
 }
-suspend fun loadTimeStarring(userName: String, repoName: String, employees: List<Star>, callback: returnResult){
+suspend fun loadTimeStarring(userName: String, repoName: String, employees: List<Star>): MutableMap<String, String> {
     val resultTimeStarring = mutableMapOf<String, String>()
 
     employees.forEach {
-        resultTimeStarring[it.date] = it.userId.name
+        resultTimeStarring[it.date] = it.userName
     }
 
     if(resultTimeStarring.isNotEmpty()) {
-        callback.returnTimeStarring(resultTimeStarring)
+        return resultTimeStarring
     } else{
         val listStar: List<Repo1> = try {
             GitApi1.retrofitService1.listRepos1(userName, repoName)
@@ -83,17 +73,18 @@ suspend fun loadTimeStarring(userName: String, repoName: String, employees: List
             resultTimeStarring[it.starred_at] = it.user.login
         }
     }
+    return resultTimeStarring
 }
 @DelicateCoroutinesApi
-suspend fun loadNameRepos(userName: String, employees: List<Star>, callback: returnResult){
+suspend fun loadNameRepos(userName: String, employees: List<Repository>): MutableList<String> {
     val resultNameRepos = mutableListOf<String>()
 
     employees.forEach {
-        resultNameRepos += it.repositoryId.name
+        resultNameRepos += it.ownerName
     }
 
     if(resultNameRepos.isNotEmpty()) {
-        callback.returnNameRepos(resultNameRepos.sorted())
+        return resultNameRepos
     }
 
     val listRepos: List<Repo> = try {
@@ -104,5 +95,5 @@ suspend fun loadNameRepos(userName: String, employees: List<Star>, callback: ret
     listRepos.forEach{ i->
             resultNameRepos += i.name
     }
-    callback.returnNameRepos(resultNameRepos)
+    return resultNameRepos
 }

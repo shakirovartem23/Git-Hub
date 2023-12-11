@@ -1,9 +1,7 @@
 package com.example.githubapp
 
 import Save_Data.AppDatabase
-import Save_Data.Repository
 import Save_Data.Star
-import Save_Data.User
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
@@ -43,26 +41,14 @@ class interactionWithGitHub : Service() {
                         classResult.loadUsersOfStarring(userName, repo.name)
                             .forEach { star ->
                                 val objectOfStar = Star(
-                                    star.starred_at.hashCode() + repo.owner.id.hashCode() + star.user.avatar_url.hashCode() + repo.id.hashCode() + repo.name.hashCode(),
+                                    0,
                                     star.starred_at,
-                                    User(
-                                        repo.owner.id,
-                                        star.user.login,
-                                        star.user.avatar_url
-                                    ),
-                                    Repository(
-                                        repo.id,
-                                        repo.name,
-                                        User(
-                                            repo.owner.id,
-                                            repo.owner.login,
-                                            repo.owner.avatar_url
-                                        )
-                                    )
+                                    star.user.login,
+                                    repo.name
                                 )
                                 if (objectOfStar !in listOfStar) {
                                     GlobalScope.launch(Dispatchers.IO) {
-                                        employeeDao.insertOfStars(
+                                        employeeDao.insertStar(
                                             objectOfStar
                                         )
                                     }
