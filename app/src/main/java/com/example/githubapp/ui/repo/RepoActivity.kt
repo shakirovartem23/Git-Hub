@@ -1,6 +1,7 @@
 package com.example.githubapp.ui.repo
 
 import Save_Data.AppDatabase
+import Save_Data.Repository
 import Save_Data.Star
 import android.content.Context
 import android.content.Intent
@@ -92,212 +93,92 @@ class RepoActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
+    fun makerColor(bool: Boolean, starButton: MaterialButton) {
+        starButton.foregroundTintList = when(bool){
+            true ->
+                ColorStateList.valueOf(resources.getColor(R.color.white))
+            else ->
+                ColorStateList.valueOf(resources.getColor(R.color.black))
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.repo)
 
-        onNewIntent(intent)
-
-        val extras = intent.extras!!
-        val title1 = extras.getString("title")!!
-        val user = extras.getString("user")!!
-        val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
-        val barChart: BarChart = findViewById(R.id.idBarChart)
-        val button6 = findViewById<Button>(R.id.button6)
-        var intent: Intent
-        val textTitle = findViewById<TextView>(R.id.barText)
-        textTitle.text=title1
-        
-        val employeeDao = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "allStar"
-        ).build().employeeDao()
-
-        val star2 = findViewById<MaterialButton>(R.id.star2)
         GlobalScope.launch(Dispatchers.Main) {
-            val bool = when (employeeDao.allStar()
-                .find { it.repositoryName == title1 }) {
-                null -> false
-                else -> true
-            }
-            if (bool) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    star2.foregroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.white))
-                }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    star2.foregroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.black))
-                }
-            }
-        }
-        
-        star2.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                val foregroundTint = star2.foregroundTintList
-                val allStar = employeeDao.selectStarWO(title1)
-                var listOfStar1 = mutableListOf<Star>()
-                if (ColorStateList.valueOf(resources.getColor(R.color.white)) == foregroundTint
-                ) {
-                    allStar.forEach {
-                        val OS0 = Star(
-                            0,
-                            it.date,
-                            it.userName,
-                            it.repositoryName
+
+            onNewIntent(intent)
+
+            val extras = intent.extras!!
+            val title1 = extras.getString("title")!!
+            val user = extras.getString("user")!!
+            val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
+            val barChart: BarChart = findViewById(R.id.idBarChart)
+            val button6 = findViewById<Button>(R.id.button6)
+            var intent: Intent
+            val textTitle = findViewById<TextView>(R.id.barText)
+            textTitle.text = title1
+
+            val employeeDao = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java, "Star"
+            ).build().employeeDao()
+
+            val star2 = findViewById<MaterialButton>(R.id.star2)
+            makerColor(
+                employeeDao
+                    .selectRepo(
+                        title1
+                    )
+                    .favourite,
+                star2
+            )
+            star2.setOnClickListener {
+                GlobalScope.launch(Dispatchers.Main) {
+                    var obj = employeeDao.selectRepo(title1)
+                    makerColor(!obj.favourite, star2)
+                    employeeDao
+                        .updateRepository(
+                            Repository(
+                                obj.id,
+                                obj.name,
+                                obj.ownerName,
+                                !obj.favourite
+                            )
                         )
-                        listOfStar1 += OS0
-                    }
-                    GlobalScope.launch(Dispatchers.Main) {
-                        star2.foregroundTintList =
-                            ColorStateList.valueOf(resources.getColor(R.color.black))
-                        employeeDao.allStar()
-                            .filter { it.repositoryName == title1 }
-                            .forEach {
-                                employeeDao.deleteStar(it)
-                            }
-                    }
-                } else {
-                    allStar.forEach {
-                        val OS0 = Star(
-                            0,
-                            it.date,
-                            it.userName,
-                            it.repositoryName
-                        )
-                        listOfStar1 += OS0
-                    }
-                    GlobalScope.launch(Dispatchers.Main) {
-                        val list = listOfStar1
-                        star2.foregroundTintList =
-                            ColorStateList.valueOf(resources.getColor(R.color.white))
-                        if (employeeDao.allStar()
-                                .filter { it.userName == title1 }.isNotEmpty()
-                        ) else {
-                            list.forEach{
-                                employeeDao.insertStar(it)
-                            }
-                        }
-                    }
                 }
             }
-        }
 
-        var map = mutableMapOf<String, String>()
-        GlobalScope.launch(Dispatchers.Main) {
-            map = loadTimeStarring(user, title1, employeeDao.selectStarWR(title1))
-        }
+            var map = loadTimeStarring(user, title1, employeeDao.selectStarWR(title1))
 
-        findViewById<Toolbar>(R.id.head).setOnClickListener {
-            intent = Intent(this@RepoActivity, SelectRepoActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-            startActivity(intent)
-        }
-        val listYear = listOf("Winter", "Spring", "Summer", "Autumn")
-        val listSeason = listOf(
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "Jule",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December"
-        )
-        val listMonth = listOf("First", "Second", "Third", "Forth")
-        val listFreeTime = listOf("Result")
-
-        val buttonOfYear = findViewById<RadioButton>(R.id.buttonOfYear)
-        buttonOfYear.isChecked = true
-
-        val entries = mutableListOf<BarEntry>()
-        var count = 0f
-
-        val text = radioGroup.checkedRadioButtonId
-
-        var list_for_star = when (text) {
-            R.id.buttonOfYear -> Year(map)
-            R.id.buttonOfSeason -> Season(map)
-            else -> Month(map)
-        }
-
-        var list = when (text) {
-            R.id.buttonOfYear -> listYear
-            R.id.buttonOfSeason -> listSeason
-            else -> listMonth
-        }
-        list_for_star.forEach { value ->
-            entries += BarEntry(count, value.toFloat())
-            count += 1
-        }
-        println("Error: ${list_for_star}")
-
-        val barDataSet = BarDataSet(entries, title1)
-        val axisLeft = barChart.axisLeft
-        val axisRight = barChart.axisRight
-        val xAxis = barChart.xAxis
-
-
-        barChart.axisRight.setDrawAxisLine(false)
-        axisLeft.isEnabled = false
-        axisLeft.setDrawAxisLine(false)
-        axisRight.setDrawAxisLine(false)
-        axisRight.isEnabled = false
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        barChart.setTouchEnabled(true)
-        barChart.legend.isEnabled = false
-        xAxis.setDrawGridLines(false)
-        xAxis.setDrawAxisLine(false)
-        barChart.isScaleXEnabled = false
-        barChart.description.isEnabled = false
-
-        if(list!=listFreeTime){
-            xAxis.valueFormatter = IndexAxisValueFormatter(list)
-            xAxis.labelCount = list.size - 1
-            xAxis.labelRotationAngle = 90f
-        } else{
-            xAxis.isEnabled = false
-        }
-
-        val data = BarData(barDataSet)
-        barChart.data = data
-        barDataSet.colors = listOf(resources.getColor(R.color.teal_200),
-            resources.getColor(R.color.purple_200),
-            resources.getColor(R.color.redFull),
-            resources.getColor(R.color.purple_700))
-
-        barChart.invalidate()
-        barChart.refreshDrawableState()
-
-        barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-            override fun onValueSelected(e: Entry?, h: Highlight?) {
-                intent = Intent(this@RepoActivity, UsersActivity::class.java)
-                intent.putExtra("title", title1)
-                intent.putExtra("user", user)
-                val currentDate = Date()
-                val dateFormat: DateFormat = SimpleDateFormat("MM", Locale.getDefault())
-                val dateText: String = dateFormat.format(currentDate)
-                val listResponse = when (text) {
-                    R.id.buttonOfYear -> SelectTime.YEAR.DurationList(map, listYear[h!!.x.toInt()])
-                    R.id.buttonOfSeason -> SelectTime.SEASON.DurationList(map, listSeason[h!!.x.toInt()])
-                    else -> SelectTime.MONTHS.DurationList(map,
-                        dateText + " " + listMonth[h!!.x.toInt()])
-                }
-                intent.putExtra("DataValue", listResponse.toTypedArray())
+            findViewById<Toolbar>(R.id.head).setOnClickListener {
+                intent = Intent(this@RepoActivity, SelectRepoActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
                 startActivity(intent)
             }
-            override fun onNothingSelected() {
+            val listYear = listOf("Winter", "Spring", "Summer", "Autumn")
+            val listSeason = listOf(
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "Jule",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December"
+            )
+            val listMonth = listOf("First", "Second", "Third", "Forth")
+            val listFreeTime = listOf("Result")
 
-            }
+            val buttonOfYear = findViewById<RadioButton>(R.id.buttonOfYear)
+            buttonOfYear.isChecked = true
 
-        })
-
-        button6.setOnClickListener {
             val entries = mutableListOf<BarEntry>()
             var count = 0f
 
@@ -339,20 +220,22 @@ class RepoActivity : AppCompatActivity() {
             barChart.isScaleXEnabled = false
             barChart.description.isEnabled = false
 
-            if(list!=listFreeTime){
+            if (list != listFreeTime) {
                 xAxis.valueFormatter = IndexAxisValueFormatter(list)
                 xAxis.labelCount = list.size - 1
                 xAxis.labelRotationAngle = 90f
-            } else{
+            } else {
                 xAxis.isEnabled = false
             }
 
             val data = BarData(barDataSet)
             barChart.data = data
-            barDataSet.colors = listOf(resources.getColor(R.color.teal_200),
+            barDataSet.colors = listOf(
+                resources.getColor(R.color.teal_200),
                 resources.getColor(R.color.purple_200),
                 resources.getColor(R.color.redFull),
-                resources.getColor(R.color.purple_700))
+                resources.getColor(R.color.purple_700)
+            )
 
             barChart.invalidate()
             barChart.refreshDrawableState()
@@ -366,20 +249,128 @@ class RepoActivity : AppCompatActivity() {
                     val dateFormat: DateFormat = SimpleDateFormat("MM", Locale.getDefault())
                     val dateText: String = dateFormat.format(currentDate)
                     val listResponse = when (text) {
-                        R.id.buttonOfYear -> SelectTime.YEAR.DurationList(map, listYear[h!!.x.toInt()])
-                        R.id.buttonOfSeason -> SelectTime.SEASON.DurationList(map, listSeason[h!!.x.toInt()])
-                        else -> SelectTime.MONTHS.DurationList(map,
-                            dateText + " " + listMonth[h!!.x.toInt()])
+                        R.id.buttonOfYear -> SelectTime.YEAR.DurationList(
+                            map,
+                            listYear[h!!.x.toInt()]
+                        )
+
+                        R.id.buttonOfSeason -> SelectTime.SEASON.DurationList(
+                            map,
+                            listSeason[h!!.x.toInt()]
+                        )
+
+                        else -> SelectTime.MONTHS.DurationList(
+                            map,
+                            dateText + " " + listMonth[h!!.x.toInt()]
+                        )
                     }
                     intent.putExtra("DataValue", listResponse.toTypedArray())
-                    println("ListResponse: "+listResponse)
                     startActivity(intent)
                 }
+
                 override fun onNothingSelected() {
 
                 }
 
             })
+
+            button6.setOnClickListener {
+                val entries = mutableListOf<BarEntry>()
+                var count = 0f
+
+                val text = radioGroup.checkedRadioButtonId
+
+                var list_for_star = when (text) {
+                    R.id.buttonOfYear -> Year(map)
+                    R.id.buttonOfSeason -> Season(map)
+                    else -> Month(map)
+                }
+
+                var list = when (text) {
+                    R.id.buttonOfYear -> listYear
+                    R.id.buttonOfSeason -> listSeason
+                    else -> listMonth
+                }
+                list_for_star.forEach { value ->
+                    entries += BarEntry(count, value.toFloat())
+                    count += 1
+                }
+                println("Error: ${list_for_star}")
+
+                val barDataSet = BarDataSet(entries, title1)
+                val axisLeft = barChart.axisLeft
+                val axisRight = barChart.axisRight
+                val xAxis = barChart.xAxis
+
+
+                barChart.axisRight.setDrawAxisLine(false)
+                axisLeft.isEnabled = false
+                axisLeft.setDrawAxisLine(false)
+                axisRight.setDrawAxisLine(false)
+                axisRight.isEnabled = false
+                xAxis.position = XAxis.XAxisPosition.BOTTOM
+                barChart.setTouchEnabled(true)
+                barChart.legend.isEnabled = false
+                xAxis.setDrawGridLines(false)
+                xAxis.setDrawAxisLine(false)
+                barChart.isScaleXEnabled = false
+                barChart.description.isEnabled = false
+
+                if (list != listFreeTime) {
+                    xAxis.valueFormatter = IndexAxisValueFormatter(list)
+                    xAxis.labelCount = list.size - 1
+                    xAxis.labelRotationAngle = 90f
+                } else {
+                    xAxis.isEnabled = false
+                }
+
+                val data = BarData(barDataSet)
+                barChart.data = data
+                barDataSet.colors = listOf(
+                    resources.getColor(R.color.teal_200),
+                    resources.getColor(R.color.purple_200),
+                    resources.getColor(R.color.redFull),
+                    resources.getColor(R.color.purple_700)
+                )
+
+                barChart.invalidate()
+                barChart.refreshDrawableState()
+
+                barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                    override fun onValueSelected(e: Entry?, h: Highlight?) {
+                        intent = Intent(this@RepoActivity, UsersActivity::class.java)
+                        intent.putExtra("title", title1)
+                        intent.putExtra("user", user)
+                        val currentDate = Date()
+                        val dateFormat: DateFormat = SimpleDateFormat("MM", Locale.getDefault())
+                        val dateText: String = dateFormat.format(currentDate)
+                        val listResponse = when (text) {
+                            R.id.buttonOfYear -> SelectTime.YEAR.DurationList(
+                                map,
+                                listYear[h!!.x.toInt()]
+                            )
+
+                            R.id.buttonOfSeason -> SelectTime.SEASON.DurationList(
+                                map,
+                                listSeason[h!!.x.toInt()]
+                            )
+
+                            else -> SelectTime.MONTHS.DurationList(
+                                map,
+                                dateText + " " + listMonth[h!!.x.toInt()]
+                            )
+                        }
+                        intent.putExtra("DataValue", listResponse.toTypedArray())
+                        println("ListResponse: " + listResponse)
+                        startActivity(intent)
+                    }
+
+                    override fun onNothingSelected() {
+
+                    }
+
+                })
+            }
         }
     }
 }

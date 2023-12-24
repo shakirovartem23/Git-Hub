@@ -13,59 +13,31 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubapp.R
 import com.google.android.material.button.MaterialButton
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-@OptIn(DelicateCoroutinesApi::class)
-fun fun1(
-    list: EmployeeDao,
-    name: String
-): Boolean{
-    val list1 = mutableListOf<String>()
-    GlobalScope.launch(Dispatchers.IO) {
-        list.allRepos().forEach {
-            list1 += it.name
-        }
-    }
-    return name in list1
-}
-@RequiresApi(Build.VERSION_CODES.M)
-fun fun2(
-    button: MaterialButton,
-    white: ColorStateList,
-    black: ColorStateList,
-    employeeDao: EmployeeDao,
-    s: String
-): Boolean{
-    val perm = fun1(employeeDao, s)
-
-    when(perm){
-        true -> button.foregroundTintList =
-            white
-        else -> button.foregroundTintList =
-            black
-    }
-
-    return perm
-}
-
 class SelectRepoAdapter(
     private val resources: Resources,
     private val employeeDao: EmployeeDao,
-    private val callback: callBack,
     private val names: List<String>,
-    private val userName: String
+    private val userName: String,
+    private val callback: callBack,
 ) :
     RecyclerView.Adapter<SelectRepoAdapter.MyViewHolder>() {
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun makerColor(bool: Boolean, starButton: MaterialButton) {
+        starButton.foregroundTintList = when(bool){
+            true ->
+                ColorStateList.valueOf(resources.getColor(R.color.white))
+            else ->
+                ColorStateList.valueOf(resources.getColor(R.color.black))
+        }
+    }
     fun interface callBack{
         fun call(repoName: String)
     }
-
-    val black = ColorStateList.valueOf(resources.getColor(R.color.black))
-    val white = ColorStateList.valueOf(resources.getColor(R.color.white))
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val selectButton: MaterialButton = itemView.findViewById(R.id.button)
@@ -85,25 +57,51 @@ class SelectRepoAdapter(
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val button = holder.selectButton
+        GlobalScope.launch(Dispatchers.Main) {
+            val button = holder.selectButton
+            val repoName = names[position]
 
-        button.text = names[position]
-        holder.nameRepo.text = "Name Repository"
+            button.text = repoName
+            holder.nameRepo.text = "Name Repository"
 
-        holder.starButton.setOnClickListener {
-            callback.call(names[position])
-        }
+            if(employeeDao.selectRepo(repoName)==null){
+                employeeDao.insertRepo(
+                    Repository(
+                        0,
+                        names[position],
+                        userName,
+                        false
+                    )
+                )
+            }
 
-        holder.starButton.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                employeeDao.updateRepository(Repository(
-                    button.text.toString().hashCode(),
-                    button.text.toString(),
-                    userName,
-                    fun2(button, white, black, employeeDao, names[position])
-                ))
-                    button.foregroundTintList =
-                        black
+            button.setOnClickListener {
+                callback.call(repoName)
+            }
+
+            makerColor(
+                employeeDao
+                    .selectRepo(
+                        repoName
+                    )
+                    .favourite,
+                holder
+                    .starButton
+            )
+            holder.starButton.setOnClickListener {
+                GlobalScope.launch(Dispatchers.Main) {
+                    var obj = employeeDao.selectRepo(repoName)
+                    makerColor(!obj.favourite, holder.starButton)
+                    employeeDao
+                        .updateRepository(
+                            Repository(
+                                obj.id,
+                                obj.name,
+                                obj.ownerName,
+                                !obj.favourite
+                            )
+                        )
+                }
             }
         }
     }

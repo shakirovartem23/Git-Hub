@@ -52,25 +52,25 @@ suspend fun loadUsersOfStarring(
             }
         }
     }
-    return listRepos
+    return resultUsersOfStarring
 }
 suspend fun loadTimeStarring(userName: String, repoName: String, employees: List<Star>): MutableMap<String, String> {
     val resultTimeStarring = mutableMapOf<String, String>()
 
-    employees.forEach {
-        resultTimeStarring[it.date] = it.userName
+    val listStar: List<Repo1> = try {
+        GitApi1.retrofitService1.listRepos1(userName, repoName)
+    } catch(e: retrofit2.HttpException) {
+        emptyList()
+    }
+    listStar.forEach {
+        resultTimeStarring[it.starred_at] = it.user.login
     }
 
     if(resultTimeStarring.isNotEmpty()) {
         return resultTimeStarring
     } else{
-        val listStar: List<Repo1> = try {
-            GitApi1.retrofitService1.listRepos1(userName, repoName)
-        } catch(e: retrofit2.HttpException) {
-            emptyList()
-        }
-        listStar.forEach {
-            resultTimeStarring[it.starred_at] = it.user.login
+        employees.forEach {
+            resultTimeStarring[it.date] = it.userName
         }
     }
     return resultTimeStarring
@@ -79,21 +79,22 @@ suspend fun loadTimeStarring(userName: String, repoName: String, employees: List
 suspend fun loadNameRepos(userName: String, employees: List<Repository>): MutableList<String> {
     val resultNameRepos = mutableListOf<String>()
 
-    employees.forEach {
-        resultNameRepos += it.ownerName
+    val listRepos: List<Repo> = try {
+        GitApi.retrofitService.listRepos(userName)
+    } catch(e: retrofit2.HttpException) {
+        emptyList()
+    }
+
+    listRepos.forEach{ i->
+        resultNameRepos += i.name
     }
 
     if(resultNameRepos.isNotEmpty()) {
         return resultNameRepos
     }
 
-    val listRepos: List<Repo> = try {
-        GitApi.retrofitService.listRepos(userName)
-    } catch(e: retrofit2.HttpException) {
-        emptyList()
-    }
-    listRepos.forEach{ i->
-            resultNameRepos += i.name
+    employees.forEach {
+        resultNameRepos += it.name
     }
     return resultNameRepos
 }

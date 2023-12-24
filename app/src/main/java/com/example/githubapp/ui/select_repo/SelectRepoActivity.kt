@@ -78,7 +78,7 @@ class SelectRepoActivity : AppCompatActivity(){
 
         val employeeDao = Room.databaseBuilder(
             applicationContext,
-            AppDatabase::class.java, "allStar"
+            AppDatabase::class.java, "Star"
         ).build().employeeDao()
 
         floatButton.setOnClickListener{
@@ -88,17 +88,17 @@ class SelectRepoActivity : AppCompatActivity(){
 
                 val resultNameRepos = loadNameRepos(
                     userName.text.toString(),
-                    employeeDao.selectRepo(userName.text.toString())
+                    employeeDao.selectRepos(userName.text.toString())
                 )
 
                 recyclerView.layoutManager = LinearLayoutManager(this@SelectRepoActivity)
-                recyclerView.adapter = SelectRepoAdapter(resources, employeeDao, { repoName ->
-                        val intent = Intent(this@SelectRepoActivity, RepoActivity::class.java)
-                        intent.putExtra("title", repoName)
-                        intent.putExtra("user", userName.text.toString())
-                        intent.putExtra("resultNameRepos", resultNameRepos.toTypedArray())
-                        startActivity(intent)
-                    }, resultNameRepos.toSet().toList(), userName.text.toString())
+                recyclerView.adapter = SelectRepoAdapter(resources, employeeDao, resultNameRepos.toSet().toList(), userName.text.toString()) { repoName ->
+                    val intent = Intent(this@SelectRepoActivity, RepoActivity::class.java)
+                    intent.putExtra("title", repoName)
+                    intent.putExtra("user", userName.text.toString())
+                    intent.putExtra("resultNameRepos", resultNameRepos.toTypedArray())
+                    startActivity(intent)
+                }
             }
         }
     }

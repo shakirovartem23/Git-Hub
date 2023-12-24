@@ -37,13 +37,12 @@
         android:id="@+id/star2"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginBottom="7dp"
         android:background="?selectableItemBackground"
-        android:foreground="@drawable/star_point_icon_icons_com_68483"
+        android:foreground="@drawable/free_icon_heart_1550594"
+        android:foregroundTint="#00000000"
         android:backgroundTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/head"
         app:layout_constraintEnd_toEndOf="@id/head"
-        app:layout_constraintTop_toTopOf="@id/head" />
+        app:layout_constraintTop_toBottomOf="@id/head" />
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/idBarChart"

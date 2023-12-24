@@ -22,7 +22,7 @@ data class Star(
 )
 @Entity("Repository")
 data class Repository(
-    @PrimaryKey()
+    @PrimaryKey(autoGenerate = true)
     val id: Int,
 
     val name: String,
@@ -63,7 +63,10 @@ interface EmployeeDao {
     suspend fun updateRepository(repository: Repository)
 
     @Query("SELECT * FROM Repository WHERE name = :name")
-    suspend fun selectRepo(name: String): List<Repository>
+    suspend fun selectRepos(name: String): List<Repository>
+
+    @Query("SELECT * FROM Repository WHERE name = :repoName")
+    suspend fun selectRepo(repoName: String): Repository
 
     @Query("SELECT * FROM Star WHERE userName = :starOwner")
     suspend fun selectStarWR(starOwner: String): List<Star>

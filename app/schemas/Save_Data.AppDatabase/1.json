@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "278330edaebd0f207eba62ba3d6c253a",
+    "identityHash": "7a71f4c48d545aea97c009f3715bcdf7",
     "entities": [
       {
         "tableName": "Star",
@@ -44,7 +44,7 @@
       },
       {
         "tableName": "Repository",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `ownerName` TEXT NOT NULL, `favourite` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `ownerName` TEXT NOT NULL, `favourite` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -72,7 +72,7 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
             "id"
           ]
@@ -116,7 +116,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '278330edaebd0f207eba62ba3d6c253a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7a71f4c48d545aea97c009f3715bcdf7')"
     ]
   }
 }
