@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7a71f4c48d545aea97c009f3715bcdf7",
+    "identityHash": "bee1a227c054695c090db389334ef836",
     "entities": [
       {
         "tableName": "Star",
@@ -44,7 +44,7 @@
       },
       {
         "tableName": "Repository",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `ownerName` TEXT NOT NULL, `favourite` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `ownerName` TEXT NOT NULL, `stargazers_count` INTEGER NOT NULL, `favourite` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -62,6 +62,12 @@
             "fieldPath": "ownerName",
             "columnName": "ownerName",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stargazers_count",
+            "columnName": "stargazers_count",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -116,7 +122,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7a71f4c48d545aea97c009f3715bcdf7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bee1a227c054695c090db389334ef836')"
     ]
   }
 }

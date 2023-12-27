@@ -1,9 +1,10 @@
 package com.example.githubapp
 
 import Save_Data.AppDatabase
-import Save_Data.Star
+import Save_Data.Repository
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -24,7 +25,10 @@ class MyBroadcastReceiver : BroadcastReceiver() {
     private fun createNotify(
         context: Context,
         countNotify: Int,
-        intent: Intent
+        intent: Intent,
+        userName: String,
+        repoName: String,
+        adds: Int
     ){
         val name = "Обновление"
         val descriptionText = "Загрузка завершена!!!"
@@ -34,22 +38,26 @@ class MyBroadcastReceiver : BroadcastReceiver() {
         }
         channel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500)
 
+        var text = when(adds>0){
+            true -> "Поздравляем $repoName повысилась в рейтинге пользователей на - $adds. Открытие будущего на грани."
+            else -> "С $repoName увы сняли звёздочки $adds. Не расстраивайтесь, возможно оно находится ещё в доработке."
+        }
 
         val builder = NotificationCompat.Builder(context!!, "notifyDownload")
             .setSmallIcon(R.drawable.icons8_github_58)
-            .setContentTitle("Обновление завершено!!!")
-//            .setContentText(" - $repoName")
+            .setContentTitle("Вести repositories")
+            .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setVibrate(longArrayOf(100, 200, 300, 400, 500))
             .setAutoCancel(true)
-//            .setContentIntent(
-////                PendingIntent
-////                .getActivity(context, 0, intent.apply {
-////                    putExtra("title", repoName)
-////                    putExtra("user", userName)
-//////                },
-////                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-//            )
+            .setContentIntent(
+                PendingIntent
+                .getActivity(context, 0, intent.apply {
+                    putExtra("title", repoName)
+                    putExtra("user", userName)
+                },
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+            )
 
         val notificationManager: NotificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -68,36 +76,25 @@ class MyBroadcastReceiver : BroadcastReceiver() {
         ).build().employeeDao()
         val classResult = SaveDataForSelect()
         GlobalScope.launch(Dispatchers.Main) {
-            val allLikeStar = employeeDao
-                .allStar()
+            val repos = employeeDao.allLikeRepos()
+            var count = 0
 
+            repos.forEach{
+                val result = classResult.loadLikeRepo(it.ownerName, it.name)
 
-            allLikeStar.forEach {star1 ->
-                    classResult.loadUsersOfStarring(
-                        star1.userName,
-                        star1.repositoryName
+                if(result!=null && result.stargazers_count!=it.stargazers_count){
+                    count+=1
+                    createNotify(context, count, Intent(context, RepoActivity::class.java), it.ownerName, it.name, result.stargazers_count-it.stargazers_count)
+                    employeeDao.updateRepository(
+                        Repository(
+                            it.id,
+                            it.name,
+                            it.ownerName,
+                            result.stargazers_count,
+                            it.favourite
+                        )
                     )
-                        .forEach { star ->
-                            val objectOfStar = Star(
-                                0,
-                                star.starred_at,
-                                star.user.login,
-                                star1.repositoryName
-                            )
-                            if(employeeDao.allStar().filter { it.repositoryName==objectOfStar.repositoryName}.isEmpty()) {
-                                JustSingleton.countNotify+=1
-                                val intent = Intent(context, RepoActivity::class.java)
-                                createNotify(
-                                    context,
-                                    JustSingleton.countNotify,
-                                    intent
-                                )
-                                employeeDao.insertStar(objectOfStar)
-                            }
-                        }
-            allLikeStar.forEach {
-                employeeDao.deleteStar(it)
-            }
+                }
             }
         }
     }

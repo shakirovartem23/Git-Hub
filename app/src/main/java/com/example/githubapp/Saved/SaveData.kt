@@ -76,25 +76,26 @@ suspend fun loadTimeStarring(userName: String, repoName: String, employees: List
     return resultTimeStarring
 }
 @DelicateCoroutinesApi
-suspend fun loadNameRepos(userName: String, employees: List<Repository>): MutableList<String> {
-    val resultNameRepos = mutableListOf<String>()
+suspend fun loadNameRepos(userName: String, employees: List<Repository>): MutableMap<String, Int> {
+    val resultNameRepos = mutableMapOf<String, Int>()
 
-    val listRepos: List<Repo> = try {
-        GitApi.retrofitService.listRepos(userName)
-    } catch(e: retrofit2.HttpException) {
-        emptyList()
-    }
-
-    listRepos.forEach{ i->
-        resultNameRepos += i.name
+    employees.forEach {
+        resultNameRepos[it.name] = it.stargazers_count
     }
 
     if(resultNameRepos.isNotEmpty()) {
         return resultNameRepos
     }
 
-    employees.forEach {
-        resultNameRepos += it.name
+    val listRepos: List<Repo> = try {
+        GitApi.retrofitService.listRepos(userName)
+    } catch(e: Exception) {
+        emptyList()
     }
+
+    listRepos.forEach{
+        resultNameRepos[it.name] = it.stargazers_count
+    }
+
     return resultNameRepos
 }

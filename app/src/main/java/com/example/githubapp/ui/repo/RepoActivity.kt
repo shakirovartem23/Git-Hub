@@ -2,7 +2,6 @@ package com.example.githubapp.ui.repo
 
 import Save_Data.AppDatabase
 import Save_Data.Repository
-import Save_Data.Star
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -145,6 +144,7 @@ class RepoActivity : AppCompatActivity() {
                                 obj.id,
                                 obj.name,
                                 obj.ownerName,
+                                obj.stargazers_count,
                                 !obj.favourite
                             )
                         )

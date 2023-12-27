@@ -75,6 +75,7 @@ class UsersActivity: AppCompatActivity() {
                                 obj.id,
                                 obj.name,
                                 obj.ownerName,
+                                obj.stargazers_count,
                                 !obj.favourite
                             )
                         )

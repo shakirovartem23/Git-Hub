@@ -19,7 +19,6 @@ import androidx.room.Room
 import com.example.githubapp.MyBroadcastReceiver
 import com.example.githubapp.R
 import com.example.githubapp.Saved.loadNameRepos
-import com.example.githubapp.interactionWithGitHub
 import com.example.githubapp.ui.repo.RepoActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -82,7 +81,6 @@ class SelectRepoActivity : AppCompatActivity(){
         ).build().employeeDao()
 
         floatButton.setOnClickListener{
-            startService(Intent(this@SelectRepoActivity, interactionWithGitHub::class.java).putExtra("userName", userName.text.toString()))
 
             GlobalScope.launch(Dispatchers.Main) {
 
@@ -92,11 +90,11 @@ class SelectRepoActivity : AppCompatActivity(){
                 )
 
                 recyclerView.layoutManager = LinearLayoutManager(this@SelectRepoActivity)
-                recyclerView.adapter = SelectRepoAdapter(resources, employeeDao, resultNameRepos.toSet().toList(), userName.text.toString()) { repoName ->
+                recyclerView.adapter = SelectRepoAdapter(resources, employeeDao, resultNameRepos.keys.toList(), userName.text.toString(), resultNameRepos.values.toList()) { repoName ->
                     val intent = Intent(this@SelectRepoActivity, RepoActivity::class.java)
                     intent.putExtra("title", repoName)
                     intent.putExtra("user", userName.text.toString())
-                    intent.putExtra("resultNameRepos", resultNameRepos.toTypedArray())
+                    intent.putExtra("resultNameRepos", resultNameRepos.keys.toTypedArray())
                     startActivity(intent)
                 }
             }

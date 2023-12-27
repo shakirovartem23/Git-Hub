@@ -2,8 +2,10 @@ package com.example.githubapp.Saved
 
 import com.example.githubapp.data.remove.GitApi
 import com.example.githubapp.data.remove.GitApi1
+import com.example.githubapp.data.remove.GitApi2
 import com.example.githubapp.data.remove.request_first.Repo
 import com.example.githubapp.data.remove.request_second.Repo1
+import com.example.githubapp.data.remove.request_second.Repo2
 
 
 @Suppress("UNREACHABLE_CODE")
@@ -23,6 +25,15 @@ class SaveDataForSelect {
             return GitApi.retrofitService.listRepos(userName)
         } catch(e: retrofit2.HttpException) {
             return emptyList()
+            e.run { printStackTrace() }
+        }
+    }
+
+    suspend fun loadLikeRepo(userName: String, repoName: String): Repo2? {
+        try {
+            return GitApi2.retrofitService2.listRepos(userName, repoName)
+        } catch(e: retrofit2.HttpException) {
+            return null
             e.run { printStackTrace() }
         }
     }

@@ -27,7 +27,8 @@ data class Repository(
 
     val name: String,
     val ownerName: String,
-    val favourite: Boolean,
+    val stargazers_count: Int,
+    val favourite: Boolean
 )
 @Entity("User")
 data class User(
@@ -64,6 +65,9 @@ interface EmployeeDao {
 
     @Query("SELECT * FROM Repository WHERE name = :name")
     suspend fun selectRepos(name: String): List<Repository>
+
+    @Query("SELECT * FROM Repository WHERE favourite = true")
+    suspend fun allLikeRepos(): List<Repository>
 
     @Query("SELECT * FROM Repository WHERE name = :repoName")
     suspend fun selectRepo(repoName: String): Repository

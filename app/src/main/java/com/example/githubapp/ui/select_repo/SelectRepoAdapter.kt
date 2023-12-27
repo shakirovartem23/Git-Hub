@@ -22,6 +22,7 @@ class SelectRepoAdapter(
     private val employeeDao: EmployeeDao,
     private val names: List<String>,
     private val userName: String,
+    private val stargazersCount: List<Int>,
     private val callback: callBack,
 ) :
     RecyclerView.Adapter<SelectRepoAdapter.MyViewHolder>() {
@@ -70,6 +71,7 @@ class SelectRepoAdapter(
                         0,
                         names[position],
                         userName,
+                        stargazersCount[position],
                         false
                     )
                 )
@@ -98,6 +100,7 @@ class SelectRepoAdapter(
                                 obj.id,
                                 obj.name,
                                 obj.ownerName,
+                                obj.stargazers_count,
                                 !obj.favourite
                             )
                         )
