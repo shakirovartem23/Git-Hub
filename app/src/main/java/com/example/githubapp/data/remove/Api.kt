@@ -3,6 +3,7 @@ package com.example.githubapp.data.remove
 import com.example.githubapp.data.remove.request_first.RetrofitClientInt
 import com.example.githubapp.data.remove.request_second.RetrofitClientInt1
 import com.example.githubapp.data.remove.request_second.RetrofitClientInt2
+import com.example.githubapp.data.remove.request_second.RetrofitClientInt3
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -14,7 +15,7 @@ var logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BOD
 var client: OkHttpClient = OkHttpClient.Builder()
     .addInterceptor(logging)
     .addInterceptor {
-        val request = it.request().newBuilder().addHeader("Authorization", "Bearer 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").build()
+        val request = it.request().newBuilder().addHeader("Authorization", "Bearer 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").build()
         it.proceed(request)
     }
     .build()
@@ -34,4 +35,8 @@ object GitApi1 {
 object GitApi2 {
     val retrofitService2: RetrofitClientInt2 by lazy { com.example.githubapp.data.remove.retrofit.create(
         RetrofitClientInt2::class.java) }
+}
+object GitApi3 {
+    val retrofitService3: RetrofitClientInt3 by lazy { com.example.githubapp.data.remove.retrofit.create(
+        RetrofitClientInt3::class.java) }
 }

@@ -4,9 +4,23 @@ import Save_Data.Repository
 import Save_Data.Star
 import com.example.githubapp.data.remove.GitApi
 import com.example.githubapp.data.remove.GitApi1
+import com.example.githubapp.data.remove.GitApi3
 import com.example.githubapp.data.remove.request_first.Repo
 import com.example.githubapp.data.remove.request_second.Repo1
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+
+fun generate(count: Int): Int{
+    if(count%30==0){
+        return count/30
+    } else if(count<30){
+        return 1
+    } else{
+        return count/30+1
+    }
+}
 
 suspend fun loadUsersOfStarring(
     userName: String,
@@ -77,6 +91,7 @@ suspend fun loadTimeStarring(userName: String, repoName: String, employees: List
 }
 @DelicateCoroutinesApi
 suspend fun loadNameRepos(userName: String, employees: List<Repository>): MutableMap<String, Int> {
+
     val resultNameRepos = mutableMapOf<String, Int>()
 
     employees.forEach {
@@ -87,14 +102,20 @@ suspend fun loadNameRepos(userName: String, employees: List<Repository>): Mutabl
         return resultNameRepos
     }
 
-    val listRepos: List<Repo> = try {
-        GitApi.retrofitService.listRepos(userName)
+    var listRepos: MutableList<Repo> = mutableListOf()
+    try {
+        GlobalScope.launch(Dispatchers.Main) {
+        val countRepo = GitApi3.retrofitService3.listRepos(userName)
+        for (i in 0 until generate(countRepo.public_repos)) {
+            listRepos += GitApi.retrofitService.listRepos(userName, i + 1)
+        }
+        listRepos.forEach{
+            resultNameRepos[it.name] = it.stargazers_count
+        }
+        resultNameRepos
+        }
     } catch(e: Exception) {
-        emptyList()
-    }
-
-    listRepos.forEach{
-        resultNameRepos[it.name] = it.stargazers_count
+        e.printStackTrace()
     }
 
     return resultNameRepos

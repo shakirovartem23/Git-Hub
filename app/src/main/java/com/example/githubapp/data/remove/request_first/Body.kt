@@ -2,10 +2,11 @@ package com.example.githubapp.data.remove.request_first
 
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface RetrofitClientInt {
-    @GET("users/{user}/repos?per_page=100")
-    suspend fun listRepos(@Path("user") user: String): List<Repo>
+    @GET("users/{user}/repos")
+    suspend fun listRepos(@Path("user") user: String, @Query("page") page: Int): List<Repo>
 }
 
 data class Repo(
