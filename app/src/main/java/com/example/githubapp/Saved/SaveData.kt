@@ -10,7 +10,9 @@ import com.example.githubapp.data.remove.request_second.Repo1
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 fun generate(count: Int): Int{
     if(count%30==0){
@@ -90,7 +92,7 @@ suspend fun loadTimeStarring(userName: String, repoName: String, employees: List
     return resultTimeStarring
 }
 @DelicateCoroutinesApi
-suspend fun loadNameRepos(userName: String, employees: List<Repository>): MutableMap<String, Int> {
+suspend fun loadNameRepos(userName: String, employees: List<Repository>): MutableMap<String, Int> = withContext(Dispatchers.Main){
 
     val resultNameRepos = mutableMapOf<String, Int>()
 
@@ -99,24 +101,23 @@ suspend fun loadNameRepos(userName: String, employees: List<Repository>): Mutabl
     }
 
     if(resultNameRepos.isNotEmpty()) {
-        return resultNameRepos
+        return@withContext resultNameRepos
     }
 
     var listRepos: MutableList<Repo> = mutableListOf()
     try {
-        GlobalScope.launch(Dispatchers.Main) {
-        val countRepo = GitApi3.retrofitService3.listRepos(userName)
-        for (i in 0 until generate(countRepo.public_repos)) {
-            listRepos += GitApi.retrofitService.listRepos(userName, i + 1)
-        }
-        listRepos.forEach{
-            resultNameRepos[it.name] = it.stargazers_count
-        }
-        resultNameRepos
-        }
+            println("Page1: ")
+            val countRepo = GitApi3.retrofitService3.listRepos(userName)
+            for (i in 0 until generate(countRepo.public_repos)) {
+                println("Page: $i")
+                listRepos += GitApi.retrofitService.listRepos(userName, i + 1)
+            }
+            listRepos.forEach{
+                resultNameRepos[it.name] = it.stargazers_count
+            }
+            return@withContext resultNameRepos
     } catch(e: Exception) {
         e.printStackTrace()
+        return@withContext resultNameRepos
     }
-
-    return resultNameRepos
 }

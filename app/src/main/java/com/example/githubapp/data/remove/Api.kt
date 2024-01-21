@@ -15,7 +15,7 @@ var logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BOD
 var client: OkHttpClient = OkHttpClient.Builder()
     .addInterceptor(logging)
     .addInterceptor {
-        val request = it.request().newBuilder().addHeader("Authorization", "Bearer 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").build()
+        val request = it.request().newBuilder().addHeader("Authorization", "Bearer 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").build()
         it.proceed(request)
     }
     .build()
