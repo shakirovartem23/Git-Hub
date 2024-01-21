@@ -4,6 +4,7 @@ import Save_Data.Repository
 import Save_Data.Star
 import com.example.githubapp.data.remove.GitApi
 import com.example.githubapp.data.remove.GitApi1
+import com.example.githubapp.data.remove.GitApi2
 import com.example.githubapp.data.remove.GitApi3
 import com.example.githubapp.data.remove.request_first.Repo
 import com.example.githubapp.data.remove.request_second.Repo1
@@ -50,46 +51,50 @@ suspend fun loadUsersOfStarring(
         }
         return listRepos
     } else {
-        val listStar: List<Repo1> = try {
-            GitApi1.retrofitService1.listRepos1(userName, repoName)
-        } catch(e: retrofit2.HttpException) {
-            emptyList<Repo1>()
-        }
-        listStar.forEach {
-            listRepos += Triple(
-                it.user.login,
-                it.starred_at.substring(0..9),
-                it.starred_at.substring(11..18)
-            )
-        }
-        listRepos.forEach {
-            if (it.first in dataValue) {
-                resultUsersOfStarring += it
-            }
-        }
+//        val listStar: List<Repo1> = try {
+//            GitApi1.retrofitService1.listRepos1(userName, repoName)
+//        } catch(e: retrofit2.HttpException) {
+//            emptyList<Repo1>()
+//        }
+//        listStar.forEach {
+//            listRepos += Triple(
+//                it.user.login,
+//                it.starred_at.substring(0..9),
+//                it.starred_at.substring(11..18)
+//            )
+//        }
+//        listRepos.forEach {
+//            if (it.first in dataValue) {
+//                resultUsersOfStarring += it
+//            }
+//        }
     }
     return resultUsersOfStarring
 }
-suspend fun loadTimeStarring(userName: String, repoName: String, employees: List<Star>): MutableMap<String, String> {
+suspend fun loadTimeStarring(userName: String, repoName: String, employees: List<Star>): MutableMap<String, String> = withContext(Dispatchers.Main){
     val resultTimeStarring = mutableMapOf<String, String>()
 
-    val listStar: List<Repo1> = try {
-        GitApi1.retrofitService1.listRepos1(userName, repoName)
-    } catch(e: retrofit2.HttpException) {
-        emptyList()
-    }
-    listStar.forEach {
-        resultTimeStarring[it.starred_at] = it.user.login
+    employees.forEach {
+        resultTimeStarring[it.date] = it.userName
     }
 
     if(resultTimeStarring.isNotEmpty()) {
-        return resultTimeStarring
-    } else{
-        employees.forEach {
-            resultTimeStarring[it.date] = it.userName
-        }
+        return@withContext resultTimeStarring
     }
-    return resultTimeStarring
+
+    var listStar: MutableList<Repo1> = mutableListOf()
+    try {
+        val countStar = GitApi2.retrofitService2.listRepos(userName, repoName)
+        for (i in 1..generate(countStar.stargazers_count)) {
+            listStar += GitApi1.retrofitService1.listRepos1(userName, repoName, i)
+        }
+        listStar.forEach {
+            resultTimeStarring[it.starred_at] = it.user.login
+        }
+        return@withContext resultTimeStarring
+    } catch(e: retrofit2.HttpException) {
+        return@withContext resultTimeStarring
+    }
 }
 @DelicateCoroutinesApi
 suspend fun loadNameRepos(userName: String, employees: List<Repository>): MutableMap<String, Int> = withContext(Dispatchers.Main){
@@ -106,16 +111,14 @@ suspend fun loadNameRepos(userName: String, employees: List<Repository>): Mutabl
 
     var listRepos: MutableList<Repo> = mutableListOf()
     try {
-            println("Page1: ")
-            val countRepo = GitApi3.retrofitService3.listRepos(userName)
-            for (i in 0 until generate(countRepo.public_repos)) {
-                println("Page: $i")
-                listRepos += GitApi.retrofitService.listRepos(userName, i + 1)
-            }
-            listRepos.forEach{
-                resultNameRepos[it.name] = it.stargazers_count
-            }
-            return@withContext resultNameRepos
+        val countRepo = GitApi3.retrofitService3.listRepos(userName)
+        for (i in 1..generate(countRepo.public_repos)) {
+            listRepos += GitApi.retrofitService.listRepos(userName, i)
+        }
+        listRepos.forEach{
+            resultNameRepos[it.name] = it.stargazers_count
+        }
+        return@withContext resultNameRepos
     } catch(e: Exception) {
         e.printStackTrace()
         return@withContext resultNameRepos
