@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface RetrofitClientInt1 {
     @GET("repos/{user}/{repo}/stargazers")
     @Headers("Accept: application/vnd.github.star+json")
-    suspend fun listRepos1(@Path("user") user: String, @Path("repo") repo: String, @Query("page") page: Int): List<Repo1>
+    suspend fun listRepos(@Path("user") user: String, @Path("repo") repo: String, @Query("page") page: Int): List<Repo1>
 }
 
 data class Repo1(

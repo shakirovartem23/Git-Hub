@@ -1,9 +1,9 @@
 package com.example.githubapp.data.remove
 
 import com.example.githubapp.data.remove.request_first.RetrofitClientInt
+import com.example.githubapp.data.remove.request_forth.RetrofitClientInt3
 import com.example.githubapp.data.remove.request_second.RetrofitClientInt1
-import com.example.githubapp.data.remove.request_second.RetrofitClientInt2
-import com.example.githubapp.data.remove.request_second.RetrofitClientInt3
+import com.example.githubapp.data.remove.request_third.RetrofitClientInt2
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

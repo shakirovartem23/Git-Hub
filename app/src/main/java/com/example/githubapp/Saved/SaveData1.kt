@@ -6,15 +6,20 @@ import com.example.githubapp.data.remove.GitApi2
 import com.example.githubapp.data.remove.GitApi3
 import com.example.githubapp.data.remove.request_first.Repo
 import com.example.githubapp.data.remove.request_second.Repo1
-import com.example.githubapp.data.remove.request_second.Repo2
+import com.example.githubapp.data.remove.request_third.Repo2
 
 
 @Suppress("UNREACHABLE_CODE")
 class SaveDataForSelect {
 
     suspend fun loadUsersOfStarring(userName: String, repoName: String): List<Repo1> {
+        var listUsers: List<Repo1> = listOf()
         try {
-            return GitApi1.retrofitService1.listRepos1(userName, repoName)
+            val countStar = GitApi2.retrofitService2.listRepos(userName, repoName)
+            for (i in 0 until generate(countStar.stargazers_count)) {
+                listUsers += GitApi1.retrofitService1.listRepos(userName, repoName, i + 1)
+            }
+            return listUsers
         } catch (e: retrofit2.HttpException) {
             return emptyList()
             e.run { printStackTrace() }

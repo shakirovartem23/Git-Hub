@@ -48,6 +48,9 @@ interface EmployeeDao {
     @Insert
     suspend fun insertStar(star: Star)
 
+    @Insert
+    suspend fun insertUser(user: User)
+
     @Delete
     suspend fun deleteRepo(repo: Repository)
 
@@ -77,6 +80,12 @@ interface EmployeeDao {
 
     @Query("SELECT * FROM Star WHERE repositoryName = :repositoryName")
     suspend fun selectStarWO(repositoryName: String): List<Star>
+
+    @Query("SELECT * FROM Star WHERE repositoryName = :repositoryName and userName = :userName")
+    suspend fun selectStar(userName: String, repositoryName: String): Star
+
+    @Query("SELECT * FROM Star WHERE userName = :userName")
+    suspend fun selectUser(userName: String): User
 }
 
 @Database(entities = [Star::class, Repository::class, User::class], version = 1, exportSchema = true
