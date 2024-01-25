@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import com.example.githubapp.LoadingData
 import com.example.githubapp.MyBroadcastReceiver
 import com.example.githubapp.R
 import com.example.githubapp.Saved.loadNameRepos
@@ -88,6 +89,8 @@ class SelectRepoActivity : AppCompatActivity(){
                     userName.text.toString(),
                     employeeDao.selectRepos(userName.text.toString())
                 )
+
+                startService(Intent(this@SelectRepoActivity, LoadingData::class.java).putExtra("ownerName", userName.text.toString()))
 
                 recyclerView.layoutManager = LinearLayoutManager(this@SelectRepoActivity)
                 recyclerView.adapter = SelectRepoAdapter(resources, employeeDao, resultNameRepos.keys.toList(), userName.text.toString(), resultNameRepos.values.toList()) { repoName ->
