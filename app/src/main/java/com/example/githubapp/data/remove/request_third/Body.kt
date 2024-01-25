@@ -1,4 +1,4 @@
-package com.example.githubapp.data.remove.request_second
+package com.example.githubapp.data.remove.request_third
 
 import retrofit2.http.GET
 import retrofit2.http.Path
