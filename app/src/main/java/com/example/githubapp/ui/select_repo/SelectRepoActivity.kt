@@ -62,7 +62,7 @@ class SelectRepoActivity : AppCompatActivity(){
                 am.setRepeating(
                     AlarmManager.RTC_WAKEUP,
                     System.currentTimeMillis(),
-                    (1 * 1000).toLong(),
+                    (8 * 60 * 60 * 1000).toLong(),
                     pi
                 )
             }

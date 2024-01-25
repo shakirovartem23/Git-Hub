@@ -30,7 +30,7 @@ suspend fun loadUsersOfStarring(
     repoName: String,
     dataValue: List<String>,
     employees: List<Star>
-): MutableList<Triple<String, String, String>> {
+): MutableList<Triple<String, String, String>>  = withContext(Dispatchers.Main){
     val listRepos = mutableListOf<Triple<String, String, String>>()
     val resultUsersOfStarring = mutableListOf<Triple<String, String, String>>()
 
@@ -49,27 +49,31 @@ suspend fun loadUsersOfStarring(
                 list+=it
             }
         }
-        return listRepos
+        return@withContext listRepos
     } else {
-//        val listStar: List<Repo1> = try {
-//            GitApi1.retrofitService1.listRepos1(userName, repoName)
-//        } catch(e: retrofit2.HttpException) {
-//            emptyList<Repo1>()
-//        }
-//        listStar.forEach {
-//            listRepos += Triple(
-//                it.user.login,
-//                it.starred_at.substring(0..9),
-//                it.starred_at.substring(11..18)
-//            )
-//        }
-//        listRepos.forEach {
-//            if (it.first in dataValue) {
-//                resultUsersOfStarring += it
-//            }
-//        }
+        val listStar: MutableList<Repo1>  = mutableListOf()
+        try {
+            val countStar = GitApi2.retrofitService2.listRepos(userName, repoName)
+            for (i in 1..generate(countStar.stargazers_count)) {
+                listStar += GitApi1.retrofitService1.listRepos1(userName, repoName, i)
+            }
+            listStar.forEach {
+                listRepos += Triple(
+                    it.user.login,
+                    it.starred_at.substring(0..9),
+                    it.starred_at.substring(11..18)
+                )
+            }
+            listRepos.forEach {
+                if (it.first in dataValue) {
+                    resultUsersOfStarring += it
+                }
+            }
+            return@withContext resultUsersOfStarring
+        } catch(e: retrofit2.HttpException) {
+            return@withContext resultUsersOfStarring
+        }
     }
-    return resultUsersOfStarring
 }
 suspend fun loadTimeStarring(userName: String, repoName: String, employees: List<Star>): MutableMap<String, String> = withContext(Dispatchers.Main){
     val resultTimeStarring = mutableMapOf<String, String>()

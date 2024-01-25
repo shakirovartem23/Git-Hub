@@ -69,7 +69,6 @@ class MyBroadcastReceiver : BroadcastReceiver() {
     @OptIn(DelicateCoroutinesApi::class)
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context?, intent: Intent?) {
-
         val employeeDao = Room.databaseBuilder(
             context!!,
             AppDatabase::class.java, "Star"

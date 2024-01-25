@@ -12,14 +12,14 @@ import com.example.githubapp.data.remove.request_second.Repo2
 @Suppress("UNREACHABLE_CODE")
 class SaveDataForSelect {
 
-//    suspend fun loadUsersOfStarring(userName: String, repoName: String): List<Repo1> {
-//        try {
-//            return GitApi1.retrofitService1.listRepos1(userName, repoName)
-//        } catch (e: retrofit2.HttpException) {
-//            return emptyList()
-//            e.run { printStackTrace() }
-//        }
-//    }
+    suspend fun loadUsersOfStarring(userName: String, repoName: String): List<Repo1> {
+        try {
+            return GitApi1.retrofitService1.listRepos1(userName, repoName)
+        } catch (e: retrofit2.HttpException) {
+            return emptyList()
+            e.run { printStackTrace() }
+        }
+    }
 
     suspend fun loadNameRepos(userName: String): List<Repo> {
         var listRepos: List<Repo> = listOf()
