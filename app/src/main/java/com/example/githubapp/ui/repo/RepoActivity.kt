@@ -82,15 +82,6 @@ class RepoActivity : AppCompatActivity() {
         return listNum
     }
 
-    private fun FreeTime(map: MutableMap<String, String>, inputText: String): MutableList<Int> {
-        var listNum = mutableListOf<Int>()
-        val currentDate = Date()
-        val dateFormat: DateFormat = SimpleDateFormat("MM", Locale.getDefault())
-        val dateText: String = dateFormat.format(currentDate)
-        listNum += SelectTime.DAYS.DurationList(map, "$dateText $inputText").size
-        return listNum
-    }
-
     @RequiresApi(Build.VERSION_CODES.M)
     fun makerColor(bool: Boolean, starButton: MaterialButton) {
         starButton.foregroundTintList = when(bool){
@@ -206,6 +197,9 @@ class RepoActivity : AppCompatActivity() {
             val axisRight = barChart.axisRight
             val xAxis = barChart.xAxis
 
+            val currentDate = Date()
+            val dateFormat: DateFormat = SimpleDateFormat("MM", Locale.getDefault())
+            val dateText: String = dateFormat.format(currentDate)
 
             barChart.axisRight.setDrawAxisLine(false)
             axisLeft.isEnabled = false
@@ -230,6 +224,7 @@ class RepoActivity : AppCompatActivity() {
 
             val data = BarData(barDataSet)
             barChart.data = data
+            barDataSet.label = dateText
             barDataSet.colors = listOf(
                 resources.getColor(R.color.teal_200),
                 resources.getColor(R.color.purple_200),

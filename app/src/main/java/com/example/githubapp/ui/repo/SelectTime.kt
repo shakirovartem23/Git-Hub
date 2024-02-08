@@ -2,13 +2,13 @@ package com.example.githubapp.ui.repo
 
 
 interface ForSelectTime{
-    fun DurationList(map: Map<String, String>, data: String): List<String>
+    fun DurationList(map: Map<String, String>, data: String): Map<Int, String>
 }
 
 enum class SelectTime: ForSelectTime {
     YEAR{
-        override fun DurationList(map: Map<String, String>, data: String): List<String> {
-            val list = mutableListOf<String>()
+        override fun DurationList(map: Map<String, String>, data: String): Map<Int, String> {
+            val map1 = mutableMapOf<Int, String>()
             val season = when(data){
                 "Spring" ->3..5
                 "Summer" ->6..8
@@ -17,16 +17,16 @@ enum class SelectTime: ForSelectTime {
             }
             map.keys.forEach {
                 if(it.substring(5..6).toInt() in season){
-                    list+=map[it]!!
+                    map1[it.substring(0..3).toInt()]=map[it]!!
                 }
             }
-            return list
+            return map1
         }
 
     },
     SEASON{
-        override fun DurationList(map: Map<String, String>, data: String): List<String> {
-            val list = mutableListOf<String>()
+        override fun DurationList(map: Map<String, String>, data: String): Map<Int, String> {
+            val map1 = mutableMapOf<Int, String>()
             val season = when(data){
                 "January" ->1
                 "February" ->2
@@ -42,15 +42,15 @@ enum class SelectTime: ForSelectTime {
                 else -> 12
             }
             map.keys.forEach {
-                if(it.substring(5..6).toInt() == season) list+=map[it]!!
+                if(it.substring(5..6).toInt() == season) map1[it.substring(0..3).toInt()]=map[it]!!
             }
-            return list
+            return map1
         }
 
     },
     MONTHS{
-        override fun DurationList(map: Map<String, String>, data: String): List<String> {
-            val list = mutableListOf<String>()
+        override fun DurationList(map: Map<String, String>, data: String): Map<Int, String> {
+            val map1 = mutableMapOf<Int, String>()
             val season = when(data){
                 "One" ->1
                 "Two" ->2
@@ -58,23 +58,9 @@ enum class SelectTime: ForSelectTime {
                 else ->4
             }
             map.keys.forEach {
-                if(it.substring(8..9).toInt() in listOf(29, 30, 31) || it.substring(8..9).toInt() == season) list+=map[it]!!
+                if(it.substring(8..9).toInt() in listOf(29, 30, 31) || it.substring(8..9).toInt() == season) map1[it.substring(0..3).toInt()]=map[it]!!
             }
-            return list
+            return map1
         }
-
-    },
-    DAYS{
-        override fun DurationList(map: Map<String, String>, data: String): List<String> {
-            val list = mutableListOf<String>()
-            val list1: List<Int> = data.split(" ").filter { it=="" }.map { it.toInt() }
-            map.keys.forEach {
-                if(it.substring(8..9).toInt() in list1) {
-                    list+=map[it]!!
-                }
-            }
-            return list
-        }
-
     }
 }
