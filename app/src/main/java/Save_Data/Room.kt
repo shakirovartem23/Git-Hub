@@ -84,7 +84,7 @@ interface EmployeeDao {
     @Query("SELECT * FROM Star WHERE repositoryName = :repositoryName and userName = :userName")
     suspend fun selectStar(userName: String, repositoryName: String): Star
 
-    @Query("SELECT * FROM Star WHERE userName = :userName")
+    @Query("SELECT * FROM User WHERE name = :userName")
     suspend fun selectUser(userName: String): User
 }
 

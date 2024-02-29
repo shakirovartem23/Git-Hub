@@ -46,6 +46,7 @@ class UsersActivity: AppCompatActivity() {
             }
 
             val dataValue = intent.getStringArrayExtra("DataValue")!!.toList()
+            println(dataValue)
 
             val recyclerView = findViewById<RecyclerView>(R.id.recyclerView1)
             val repoName = intent.getStringExtra("title")!!

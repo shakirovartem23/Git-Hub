@@ -41,6 +41,7 @@ suspend fun loadUsersOfStarring(
             it.date.substring(11..18)
         )
     }
+    println(employees)
 
     if(resultUsersOfStarring.isNotEmpty()) {
         val list = mutableListOf<Triple<String, String, String>>()
@@ -49,13 +50,14 @@ suspend fun loadUsersOfStarring(
                 list+=it
             }
         }
-        return@withContext listRepos
+        println(list)
+        return@withContext list
     } else {
         val listStar: MutableList<Repo1>  = mutableListOf()
         try {
             val countStar = GitApi2.retrofitService2.listRepos(userName, repoName)
             for (i in 1..generate(countStar.stargazers_count)) {
-                listStar += GitApi1.retrofitService1.listRepos1(userName, repoName, i)
+                listStar += GitApi1.retrofitService1.listRepos(userName, repoName, i)
             }
             listStar.forEach {
                 listRepos += Triple(
@@ -69,6 +71,7 @@ suspend fun loadUsersOfStarring(
                     resultUsersOfStarring += it
                 }
             }
+            println(listRepos)
             return@withContext resultUsersOfStarring
         } catch(e: retrofit2.HttpException) {
             return@withContext resultUsersOfStarring
@@ -90,7 +93,7 @@ suspend fun loadTimeStarring(userName: String, repoName: String, employees: List
     try {
         val countStar = GitApi2.retrofitService2.listRepos(userName, repoName)
         for (i in 1..generate(countStar.stargazers_count)) {
-            listStar += GitApi1.retrofitService1.listRepos1(userName, repoName, i)
+            listStar += GitApi1.retrofitService1.listRepos(userName, repoName, i)
         }
         listStar.forEach {
             resultTimeStarring[it.starred_at] = it.user.login

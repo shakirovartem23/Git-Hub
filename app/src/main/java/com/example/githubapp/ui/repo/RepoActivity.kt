@@ -34,6 +34,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -44,7 +45,7 @@ class RepoActivity : AppCompatActivity() {
         return this
     }
 
-    private fun Year(map: MutableMap<String, String>): MutableList<Int> {
+    private fun Year(map: MutableMap<String, String>, isYear: Int): MutableList<Int> {
         var listNum = mutableListOf<Int>()
         listNum += SelectTime.YEAR.DurationList(map, "Winter").size
         listNum += SelectTime.YEAR.DurationList(map, "Spring").size
@@ -53,7 +54,7 @@ class RepoActivity : AppCompatActivity() {
         return listNum
     }
 
-    private fun Season(map: MutableMap<String, String>): MutableList<Int> {
+    private fun Season(map: MutableMap<String, String>, isYear: Int): MutableList<Int> {
         var listNum = mutableListOf<Int>()
         listNum += SelectTime.SEASON.DurationList(map, "January").size
         listNum += SelectTime.SEASON.DurationList(map, "February").size
@@ -70,7 +71,7 @@ class RepoActivity : AppCompatActivity() {
         return listNum
     }
 
-    private fun Month(map: MutableMap<String, String>): MutableList<Int> {
+    private fun Month(map: MutableMap<String, String>, isYear: Int): MutableList<Int> {
         var listNum = mutableListOf<Int>()
         val currentDate = Date()
         val dateFormat: DateFormat = SimpleDateFormat("MM", Locale.getDefault())
@@ -98,6 +99,8 @@ class RepoActivity : AppCompatActivity() {
         setContentView(R.layout.repo)
 
         GlobalScope.launch(Dispatchers.Main) {
+
+            var isYear = Calendar.getInstance().get(Calendar.YEAR)
 
             onNewIntent(intent)
 
@@ -175,10 +178,10 @@ class RepoActivity : AppCompatActivity() {
 
             val text = radioGroup.checkedRadioButtonId
 
-            var list_for_star = when (text) {
-                R.id.buttonOfYear -> Year(map)
-                R.id.buttonOfSeason -> Season(map)
-                else -> Month(map)
+            val list_for_star = when (text) {
+                R.id.buttonOfYear -> Year(map, isYear)
+                R.id.buttonOfSeason -> Season(map, isYear)
+                else -> Month(map, isYear)
             }
 
             var list = when (text) {
@@ -196,10 +199,6 @@ class RepoActivity : AppCompatActivity() {
             val axisLeft = barChart.axisLeft
             val axisRight = barChart.axisRight
             val xAxis = barChart.xAxis
-
-            val currentDate = Date()
-            val dateFormat: DateFormat = SimpleDateFormat("MM", Locale.getDefault())
-            val dateText: String = dateFormat.format(currentDate)
 
             barChart.axisRight.setDrawAxisLine(false)
             axisLeft.isEnabled = false
@@ -224,7 +223,7 @@ class RepoActivity : AppCompatActivity() {
 
             val data = BarData(barDataSet)
             barChart.data = data
-            barDataSet.label = dateText
+            barDataSet.label = isYear.toString()
             barDataSet.colors = listOf(
                 resources.getColor(R.color.teal_200),
                 resources.getColor(R.color.purple_200),
@@ -259,7 +258,8 @@ class RepoActivity : AppCompatActivity() {
                             dateText + " " + listMonth[h!!.x.toInt()]
                         )
                     }
-                    intent.putExtra("DataValue", listResponse.toTypedArray())
+                    intent.putExtra("DataValue", listResponse.filter{ it.key == isYear }.values.toTypedArray())
+                    println(listResponse)
                     startActivity(intent)
                 }
 
@@ -275,10 +275,10 @@ class RepoActivity : AppCompatActivity() {
 
                 val text = radioGroup.checkedRadioButtonId
 
-                var list_for_star = when (text) {
-                    R.id.buttonOfYear -> Year(map)
-                    R.id.buttonOfSeason -> Season(map)
-                    else -> Month(map)
+                val list_for_star = when (text) {
+                    R.id.buttonOfYear -> Year(map, isYear)
+                    R.id.buttonOfSeason -> Season(map, isYear)
+                    else -> Month(map, isYear)
                 }
 
                 var list = when (text) {
@@ -355,7 +355,211 @@ class RepoActivity : AppCompatActivity() {
                                 dateText + " " + listMonth[h!!.x.toInt()]
                             )
                         }
-                        intent.putExtra("DataValue", listResponse.toTypedArray())
+                        intent.putExtra("DataValue", listResponse.filter{ it.key == isYear }.values.toTypedArray())
+                        println("ListResponse: " + listResponse)
+                        startActivity(intent)
+                    }
+
+                    override fun onNothingSelected() {
+
+                    }
+
+                })
+            }
+
+            val min = findViewById<MaterialButton>(R.id.min)
+            min.setOnClickListener {
+
+                isYear-=1
+
+                val entries = mutableListOf<BarEntry>()
+                var count = 0f
+
+                val text = radioGroup.checkedRadioButtonId
+
+                val list_for_star = when (text) {
+                    R.id.buttonOfYear -> Year(map, isYear)
+                    R.id.buttonOfSeason -> Season(map, isYear)
+                    else -> Month(map, isYear)
+                }
+
+                var list = when (text) {
+                    R.id.buttonOfYear -> listYear
+                    R.id.buttonOfSeason -> listSeason
+                    else -> listMonth
+                }
+                list_for_star.forEach { value ->
+                    entries += BarEntry(count, value.toFloat())
+                    count += 1
+                }
+                println("Error: ${list_for_star}")
+
+                val barDataSet = BarDataSet(entries, title1)
+                val axisLeft = barChart.axisLeft
+                val axisRight = barChart.axisRight
+                val xAxis = barChart.xAxis
+
+
+                barChart.axisRight.setDrawAxisLine(false)
+                axisLeft.isEnabled = false
+                axisLeft.setDrawAxisLine(false)
+                axisRight.setDrawAxisLine(false)
+                axisRight.isEnabled = false
+                xAxis.position = XAxis.XAxisPosition.BOTTOM
+                barChart.setTouchEnabled(true)
+                barChart.legend.isEnabled = false
+                xAxis.setDrawGridLines(false)
+                xAxis.setDrawAxisLine(false)
+                barChart.isScaleXEnabled = false
+                barChart.description.isEnabled = false
+
+                if (list != listFreeTime) {
+                    xAxis.valueFormatter = IndexAxisValueFormatter(list)
+                    xAxis.labelCount = list.size - 1
+                    xAxis.labelRotationAngle = 90f
+                } else {
+                    xAxis.isEnabled = false
+                }
+
+                val data = BarData(barDataSet)
+                barChart.data = data
+                barDataSet.colors = listOf(
+                    resources.getColor(R.color.teal_200),
+                    resources.getColor(R.color.purple_200),
+                    resources.getColor(R.color.redFull),
+                    resources.getColor(R.color.purple_700)
+                )
+
+                barChart.invalidate()
+                barChart.refreshDrawableState()
+
+                barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                    override fun onValueSelected(e: Entry?, h: Highlight?) {
+                        intent = Intent(this@RepoActivity, UsersActivity::class.java)
+                        intent.putExtra("title", title1)
+                        intent.putExtra("user", user)
+                        val currentDate = Date()
+                        val dateFormat: DateFormat = SimpleDateFormat("MM", Locale.getDefault())
+                        val dateText: String = dateFormat.format(currentDate)
+                        val listResponse = when (text) {
+                            R.id.buttonOfYear -> SelectTime.YEAR.DurationList(
+                                map,
+                                listYear[h!!.x.toInt()]
+                            )
+
+                            R.id.buttonOfSeason -> SelectTime.SEASON.DurationList(
+                                map,
+                                listSeason[h!!.x.toInt()]
+                            )
+
+                            else -> SelectTime.MONTHS.DurationList(
+                                map,
+                                dateText + " " + listMonth[h!!.x.toInt()]
+                            )
+                        }
+                        intent.putExtra("DataValue", listResponse.filter{ it.key == isYear }.values.toTypedArray())
+                        println(isYear)
+                        startActivity(intent)
+                    }
+
+                    override fun onNothingSelected() {
+
+                    }
+
+                })
+            }
+
+            val plus = findViewById<MaterialButton>(R.id.plus)
+            plus.setOnClickListener {
+
+                isYear+=1
+
+                val entries = mutableListOf<BarEntry>()
+                var count = 0f
+
+                val text = radioGroup.checkedRadioButtonId
+
+                val list_for_star = when (text) {
+                    R.id.buttonOfYear -> Year(map, isYear)
+                    R.id.buttonOfSeason -> Season(map, isYear)
+                    else -> Month(map, isYear)
+                }
+
+                var list = when (text) {
+                    R.id.buttonOfYear -> listYear
+                    R.id.buttonOfSeason -> listSeason
+                    else -> listMonth
+                }
+                list_for_star.forEach { value ->
+                    entries += BarEntry(count, value.toFloat())
+                    count += 1
+                }
+                println("Error: ${list_for_star}")
+
+                val barDataSet = BarDataSet(entries, title1)
+                val axisLeft = barChart.axisLeft
+                val axisRight = barChart.axisRight
+                val xAxis = barChart.xAxis
+
+
+                barChart.axisRight.setDrawAxisLine(false)
+                axisLeft.isEnabled = false
+                axisLeft.setDrawAxisLine(false)
+                axisRight.setDrawAxisLine(false)
+                axisRight.isEnabled = false
+                xAxis.position = XAxis.XAxisPosition.BOTTOM
+                barChart.setTouchEnabled(true)
+                barChart.legend.isEnabled = false
+                xAxis.setDrawGridLines(false)
+                xAxis.setDrawAxisLine(false)
+                barChart.isScaleXEnabled = false
+                barChart.description.isEnabled = false
+
+                if (list != listFreeTime) {
+                    xAxis.valueFormatter = IndexAxisValueFormatter(list)
+                    xAxis.labelCount = list.size - 1
+                    xAxis.labelRotationAngle = 90f
+                } else {
+                    xAxis.isEnabled = false
+                }
+
+                val data = BarData(barDataSet)
+                barChart.data = data
+                barDataSet.colors = listOf(
+                    resources.getColor(R.color.teal_200),
+                    resources.getColor(R.color.purple_200),
+                    resources.getColor(R.color.redFull),
+                    resources.getColor(R.color.purple_700)
+                )
+
+                barChart.invalidate()
+                barChart.refreshDrawableState()
+
+                barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                    override fun onValueSelected(e: Entry?, h: Highlight?) {
+                        intent = Intent(this@RepoActivity, UsersActivity::class.java)
+                        intent.putExtra("title", title1)
+                        intent.putExtra("user", user)
+                        val currentDate = Date()
+                        val dateFormat: DateFormat = SimpleDateFormat("MM", Locale.getDefault())
+                        val dateText: String = dateFormat.format(currentDate)
+                        val listResponse = when (text) {
+                            R.id.buttonOfYear -> SelectTime.YEAR.DurationList(
+                                map,
+                                listYear[h!!.x.toInt()]
+                            )
+
+                            R.id.buttonOfSeason -> SelectTime.SEASON.DurationList(
+                                map,
+                                listSeason[h!!.x.toInt()]
+                            )
+
+                            else -> SelectTime.MONTHS.DurationList(
+                                map,
+                                dateText + " " + listMonth[h!!.x.toInt()]
+                            )
+                        }
+                        intent.putExtra("DataValue", listResponse.filter{ it.key == isYear }.values.toTypedArray())
                         println("ListResponse: " + listResponse)
                         startActivity(intent)
                     }

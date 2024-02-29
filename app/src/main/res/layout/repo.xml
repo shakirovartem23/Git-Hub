@@ -42,15 +42,37 @@
         android:foregroundTint="#00000000"
         android:backgroundTint="@color/white"
         app:layout_constraintEnd_toEndOf="@id/head"
-        app:layout_constraintTop_toBottomOf="@id/head" />
+        app:layout_constraintTop_toTopOf="@id/head"
+        app:layout_constraintBottom_toBottomOf="@id/head"/>
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/idBarChart"
         android:layout_width="match_parent"
+        android:layout_marginHorizontal="15dp"
         android:layout_height="300dp"
         app:layout_constraintTop_toBottomOf="@id/head"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/min"
+        android:layout_width="15dp"
+        android:layout_height="300dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/idBarChart"
+        app:layout_constraintBottom_toBottomOf="@id/idBarChart"
+        app:layout_constraintTop_toTopOf="@id/idBarChart"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/plus"
+        android:layout_width="15dp"
+        android:layout_height="300dp"
+        app:layout_constraintStart_toEndOf="@id/idBarChart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/idBarChart"
+        app:layout_constraintTop_toTopOf="@id/idBarChart"
+        />
 
     <TextView
         android:id="@+id/textView"
