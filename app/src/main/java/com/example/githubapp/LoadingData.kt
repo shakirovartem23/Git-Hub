@@ -27,7 +27,7 @@ class LoadingData : Service() {
             this@LoadingData,
             AppDatabase::class.java, "Star"
         ).build().employeeDao()
-        val ownerName= intent!!.getStringExtra("ownerName")!!
+        val ownerName = intent!!.getStringExtra("ownerName")!!
         val classResult = SaveDataForSelect()
 
         GlobalScope.launch(Dispatchers.Main) {
