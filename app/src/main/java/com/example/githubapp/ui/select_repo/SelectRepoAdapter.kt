@@ -20,9 +20,9 @@ import kotlinx.coroutines.launch
 class SelectRepoAdapter(
     private val resources: Resources,
     private val employeeDao: EmployeeDao,
-    private val names: List<String>,
-    private val userName: String,
-    private val stargazersCount: List<Int>,
+    private var names: List<String>,
+    private var userName: String,
+    private var stargazersCount: List<Int>,
     private val callback: callBack,
 ) :
     RecyclerView.Adapter<SelectRepoAdapter.MyViewHolder>() {
@@ -109,5 +109,13 @@ class SelectRepoAdapter(
         }
     }
 
+    fun update(items: List<Pair<String, Int>>){
+        items.forEach {
+            names+=it.first
+            stargazersCount+=it.second
+
+        }
+        MyViewHolder(items)
+    }
     override fun getItemCount() = names.size
 }
