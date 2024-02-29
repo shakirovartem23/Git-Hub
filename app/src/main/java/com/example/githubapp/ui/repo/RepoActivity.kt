@@ -47,27 +47,27 @@ class RepoActivity : AppCompatActivity() {
 
     private fun Year(map: MutableMap<String, String>, isYear: Int): MutableList<Int> {
         var listNum = mutableListOf<Int>()
-        listNum += SelectTime.YEAR.DurationList(map, "Winter").size
-        listNum += SelectTime.YEAR.DurationList(map, "Spring").size
-        listNum += SelectTime.YEAR.DurationList(map, "Summer").size
-        listNum += SelectTime.YEAR.DurationList(map, "Autumn").size
+        listNum += SelectTime.YEAR.DurationList(map, "Winter").filter{ it.key==isYear }.size
+        listNum += SelectTime.YEAR.DurationList(map, "Spring").filter{ it.key==isYear }.size
+        listNum += SelectTime.YEAR.DurationList(map, "Summer").filter{ it.key==isYear }.size
+        listNum += SelectTime.YEAR.DurationList(map, "Autumn").filter{ it.key==isYear }.size
         return listNum
     }
 
     private fun Season(map: MutableMap<String, String>, isYear: Int): MutableList<Int> {
         var listNum = mutableListOf<Int>()
-        listNum += SelectTime.SEASON.DurationList(map, "January").size
-        listNum += SelectTime.SEASON.DurationList(map, "February").size
-        listNum += SelectTime.SEASON.DurationList(map, "March").size
-        listNum += SelectTime.SEASON.DurationList(map, "April").size
-        listNum += SelectTime.SEASON.DurationList(map, "May").size
-        listNum += SelectTime.SEASON.DurationList(map, "June").size
-        listNum += SelectTime.SEASON.DurationList(map, "Jule").size
-        listNum += SelectTime.SEASON.DurationList(map, "August").size
-        listNum += SelectTime.SEASON.DurationList(map, "September").size
-        listNum += SelectTime.SEASON.DurationList(map, "October").size
-        listNum += SelectTime.SEASON.DurationList(map, "November").size
-        listNum += SelectTime.SEASON.DurationList(map, "December").size
+        listNum += SelectTime.SEASON.DurationList(map, "January").filter{ it.key==isYear }.size
+        listNum += SelectTime.SEASON.DurationList(map, "February").filter{ it.key==isYear }.size
+        listNum += SelectTime.SEASON.DurationList(map, "March").filter{ it.key==isYear }.size
+        listNum += SelectTime.SEASON.DurationList(map, "April").filter{ it.key==isYear }.size
+        listNum += SelectTime.SEASON.DurationList(map, "May").filter{ it.key==isYear }.size
+        listNum += SelectTime.SEASON.DurationList(map, "June").filter{ it.key==isYear }.size
+        listNum += SelectTime.SEASON.DurationList(map, "Jule").filter{ it.key==isYear }.size
+        listNum += SelectTime.SEASON.DurationList(map, "August").filter{ it.key==isYear }.size
+        listNum += SelectTime.SEASON.DurationList(map, "September").filter{ it.key==isYear }.size
+        listNum += SelectTime.SEASON.DurationList(map, "October").filter{ it.key==isYear }.size
+        listNum += SelectTime.SEASON.DurationList(map, "November").filter{ it.key==isYear }.size
+        listNum += SelectTime.SEASON.DurationList(map, "December").filter{ it.key==isYear }.size
         return listNum
     }
 
@@ -76,10 +76,10 @@ class RepoActivity : AppCompatActivity() {
         val currentDate = Date()
         val dateFormat: DateFormat = SimpleDateFormat("MM", Locale.getDefault())
         val dateText: String = dateFormat.format(currentDate)
-        listNum += SelectTime.MONTHS.DurationList(map, "$dateText First").size
-        listNum += SelectTime.MONTHS.DurationList(map, "$dateText Second").size
-        listNum += SelectTime.MONTHS.DurationList(map, "$dateText Third").size
-        listNum += SelectTime.MONTHS.DurationList(map, "$dateText Forth").size
+        listNum += SelectTime.MONTHS.DurationList(map, "$dateText First").filter{ it.key==isYear }.size
+        listNum += SelectTime.MONTHS.DurationList(map, "$dateText Second").filter{ it.key==isYear }.size
+        listNum += SelectTime.MONTHS.DurationList(map, "$dateText Third").filter{ it.key==isYear }.size
+        listNum += SelectTime.MONTHS.DurationList(map, "$dateText Forth").filter{ it.key==isYear }.size
         return listNum
     }
 
