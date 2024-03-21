@@ -45,6 +45,7 @@ class UsersActivity: AppCompatActivity() {
                 startActivity(intent)
             }
 
+
             val dataValue = intent.getStringArrayExtra("DataValue")!!.toList()
             println(dataValue)
 
