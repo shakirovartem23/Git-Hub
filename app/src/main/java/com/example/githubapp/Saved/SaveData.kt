@@ -71,7 +71,6 @@ suspend fun loadUsersOfStarring(
                     resultUsersOfStarring += it
                 }
             }
-            println(listRepos)
             return@withContext resultUsersOfStarring
         } catch(e: retrofit2.HttpException) {
             return@withContext resultUsersOfStarring
@@ -111,6 +110,7 @@ suspend fun loadNameRepos(userName: String, employees: List<Repository>): Mutabl
     employees.forEach {
         resultNameRepos[it.name] = it.stargazers_count
     }
+    println(employees)
 
     if(resultNameRepos.isNotEmpty()) {
         return@withContext resultNameRepos

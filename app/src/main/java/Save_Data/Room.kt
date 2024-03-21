@@ -66,7 +66,7 @@ interface EmployeeDao {
     @Update
     suspend fun updateRepository(repository: Repository)
 
-    @Query("SELECT * FROM Repository WHERE name = :name")
+    @Query("SELECT * FROM Repository WHERE ownerName = :name")
     suspend fun selectRepos(name: String): List<Repository>
 
     @Query("SELECT * FROM Repository WHERE favourite = true")
@@ -90,7 +90,9 @@ interface EmployeeDao {
 
 @Database(entities = [Star::class, Repository::class, User::class], version = 1, exportSchema = true
 )
+
 abstract class AppDatabase : RoomDatabase() {
     abstract fun employeeDao(): EmployeeDao
 }
+
 

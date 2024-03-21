@@ -52,7 +52,7 @@ class LoadingData : Service() {
                             Star(
                                 0,
                                 star.starred_at,
-                                repo.owner.login,
+                                star.user.login,
                                 repo.name
                             )
                         )

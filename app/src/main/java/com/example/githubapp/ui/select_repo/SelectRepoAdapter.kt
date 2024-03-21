@@ -109,13 +109,5 @@ class SelectRepoAdapter(
         }
     }
 
-    fun update(items: List<Pair<String, Int>>){
-        items.forEach {
-            names+=it.first
-            stargazersCount+=it.second
-
-        }
-        MyViewHolder(items)
-    }
     override fun getItemCount() = names.size
 }

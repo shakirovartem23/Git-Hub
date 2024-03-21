@@ -101,12 +101,8 @@ class RepoActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.Main) {
 
             var isYear = Calendar.getInstance().get(Calendar.YEAR)
-
-            onNewIntent(intent)
-
-            val extras = intent.extras!!
-            val title1 = extras.getString("title")!!
-            val user = extras.getString("user")!!
+            val title1 = intent.getStringExtra("title")!!
+            val user = intent.getStringExtra("user")!!
             val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
             val barChart: BarChart = findViewById(R.id.idBarChart)
             val button6 = findViewById<Button>(R.id.button6)
@@ -146,6 +142,11 @@ class RepoActivity : AppCompatActivity() {
             }
 
             var map = loadTimeStarring(user, title1, employeeDao.selectStarWR(title1))
+            if(map.isEmpty()){
+                repeat(4){
+                    map+=Pair("", "")
+                }
+            }
 
             findViewById<Toolbar>(R.id.head).setOnClickListener {
                 intent = Intent(this@RepoActivity, SelectRepoActivity::class.java)

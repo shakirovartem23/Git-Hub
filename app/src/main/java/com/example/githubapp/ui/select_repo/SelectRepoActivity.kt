@@ -26,6 +26,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @DelicateCoroutinesApi
 class SelectRepoActivity : AppCompatActivity(){
@@ -84,12 +85,11 @@ class SelectRepoActivity : AppCompatActivity(){
         floatButton.setOnClickListener{
 
             GlobalScope.launch(Dispatchers.Main) {
-
+                println(employeeDao.selectRepos(userName.text.toString()))
                 val resultNameRepos = loadNameRepos(
                     userName.text.toString(),
                     employeeDao.selectRepos(userName.text.toString())
                 )
-
                 startService(Intent(this@SelectRepoActivity, LoadingData::class.java).putExtra("ownerName", userName.text.toString()))
 
                 recyclerView.layoutManager = LinearLayoutManager(this@SelectRepoActivity)
